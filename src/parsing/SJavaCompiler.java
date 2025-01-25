@@ -64,6 +64,15 @@ public class SJavaCompiler {
                 }
             }
         }
+        if (scope != 0) {
+            return INVALID_CODE;
+        }
         return LEGAL_CODE;
+    }
+
+    public static void main(String[] args) {
+        String fileName = args[0];
+        SJavaCompiler compiler = new SJavaCompiler(fileName);
+        compiler.compile();
     }
 }
