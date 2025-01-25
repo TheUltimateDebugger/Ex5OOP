@@ -44,14 +44,20 @@ public class SJavaCompiler {
                 else if (RegexUtils.matches(line, RegexUtils.METHOD_DECLARATION)) {
                     scope++;
                     MethodValidator methodValidator = new MethodValidator();
-                    methodValidator.validate(line, scope);
-                    //TODO: add error handling
+                    try {
+                        methodValidator.validate(line, scope);
+                    } catch (ValidationException e) {
+                        return INVALID_CODE;
+                    }
                 }
                 else if (RegexUtils.matches(line, RegexUtils.CONDITION)) {
                     scope++;
                     ConditionValidator conditionValidator = new ConditionValidator();
-                    conditionValidator.validate(line, scope);
-                    //TODO: add error handling
+                    try {
+                        conditionValidator.validate(line, scope);
+                    } catch (ValidationException e) {
+                        return INVALID_CODE;
+                    }
                 }
                 else {
                     return INVALID_CODE;
