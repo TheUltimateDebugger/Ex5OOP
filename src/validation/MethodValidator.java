@@ -21,7 +21,7 @@ public class MethodValidator implements Validator {
         else if (line.matches("^\\s*}\\s*$")) {
             symbolTable.exitScope();
         }
-        else if (line.matches("^return\\s*;$")) {
+        else if (line.matches("^return;\\s*;$")) {
             // TODO: handle return
         }
         else {
