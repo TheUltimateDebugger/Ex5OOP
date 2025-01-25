@@ -43,7 +43,7 @@ public class SJavaCompiler {
                 }
                 else if (RegexUtils.matches(line, RegexUtils.METHOD_DECLARATION)) {
                     scope++;
-                    MethodValidator methodValidator = new MethodValidator();
+                    MethodValidator methodValidator = new MethodValidator(symbolTable);
                     try {
                         methodValidator.validate(line, scope);
                     } catch (ValidationException e) {
@@ -52,7 +52,7 @@ public class SJavaCompiler {
                 }
                 else if (RegexUtils.matches(line, RegexUtils.CONDITION)) {
                     scope++;
-                    ConditionValidator conditionValidator = new ConditionValidator();
+                    ConditionValidator conditionValidator = new ConditionValidator(symbolTable);
                     try {
                         conditionValidator.validate(line, scope);
                     } catch (ValidationException e) {
