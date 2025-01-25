@@ -74,6 +74,10 @@ public class SymbolTable {
 
     public void addMethod(String name, ArrayList<String[]> parameters) {
         methods.put(name, parameters);
+        enterScope();
+        for (String[] parameter : parameters) {
+
+        }
     }
 
     public boolean methodExists(String name) {
@@ -88,8 +92,11 @@ public class SymbolTable {
         scopes.add(new HashMap<>());
     }
 
-    public void exitScope(int scope) {
-        scopes.get(scope).clear();
-        scopes.remove(scope);
+    public void exitScope() throws ValidationException {
+        if (scopes.size() == 1) {
+            throw new ValidationException("Mismatching opening and closing braces");
+        }
+        scopes.getLast().clear();
+        scopes.removeLast();
     }
 }
