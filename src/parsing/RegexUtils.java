@@ -35,6 +35,9 @@ public class RegexUtils {
     public static final String VARIABLE_DECLARATION = PRIMITIVE_TYPE +
             "\\s+" + VARIABLE_NAME + "(\\s*=\\s*.+)?;";
 
+    /** Regex for a closing scope. */
+    public static final String CLOSING_SCOPE = "\\s*}\\s*$";
+
     /** Regex for an if or while condition. */
     public static final String CONDITION = "(if|while)\\s*\\(.*\\)\\s*\\{";
 

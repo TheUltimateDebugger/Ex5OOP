@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class Parser {
     private InputStream inputStream;
-    Scanner scanner;
+    private Scanner scanner;
 
     public Parser(String fileName) throws FileException {
         try {
