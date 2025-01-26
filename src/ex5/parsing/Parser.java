@@ -1,6 +1,6 @@
-package parsing;
+package ex5.parsing;
 
-import exceptions.FileException;
+import ex5.exceptions.FileException;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

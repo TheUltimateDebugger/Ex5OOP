@@ -1,11 +1,11 @@
-package parsing;
+package ex5.parsing;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * A utility class that provides predefined regular expressions and helper methods
- * for validating and parsing s-Java code elements.
+ * for validating and ex5.parsing s-Java code elements.
  */
 public class RegexUtils {
 

@@ -1,6 +1,6 @@
-package validation;
+package ex5.validation;
 
-import exceptions.ValidationException;
+import ex5.exceptions.ValidationException;
 
 import java.util.ArrayList;
 import java.util.HashMap;

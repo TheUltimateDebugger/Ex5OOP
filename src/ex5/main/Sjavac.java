@@ -1,20 +1,22 @@
-package parsing;
+package ex5.main;
 
-import exceptions.FileException;
-import exceptions.ValidationException;
-import validation.ConditionValidator;
-import validation.MethodValidator;
-import validation.SymbolTable;
-import validation.VariableValidator;
+import ex5.exceptions.FileException;
+import ex5.exceptions.ValidationException;
+import ex5.parsing.Parser;
+import ex5.parsing.RegexUtils;
+import ex5.validation.ConditionValidator;
+import ex5.validation.MethodValidator;
+import ex5.validation.SymbolTable;
+import ex5.validation.VariableValidator;
 
-public class SJavaCompiler {
+public class Sjavac {
     public static final int LEGAL_CODE = 0;
     public static final int INVALID_CODE = 1;
     public static final int IO_ERROR = 2;
     private Parser parser;
     private SymbolTable symbolTable;
 
-    public SJavaCompiler(String fileName) {
+    public Sjavac(String fileName) {
         try {
             this.parser = new Parser(fileName);
         } catch (FileException e) {
@@ -72,7 +74,7 @@ public class SJavaCompiler {
 
     public static void main(String[] args) {
         String fileName = args[0];
-        SJavaCompiler compiler = new SJavaCompiler(fileName);
+        Sjavac compiler = new Sjavac(fileName);
         compiler.compile();
     }
 }
