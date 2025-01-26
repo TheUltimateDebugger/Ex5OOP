@@ -29,7 +29,7 @@ public class Sjavac {
         String line;
         int scope = 0;
         while ((line = parser.readLine()) != null) {
-            System.out.println("the line: " + line + " " + RegexUtils.METHOD_DECLARATION);
+            System.out.println("the line: " + line + " " + RegexUtils.IF_WHILE_BLOCK);
             if (!RegexUtils.isCommentOrEmpty(line)) {
                 line = line.trim();
                 if (RegexUtils.matches(line, RegexUtils.CLOSING_SCOPE)) {
@@ -54,7 +54,7 @@ public class Sjavac {
                         return INVALID_CODE;
                     }
                 }
-                else if (RegexUtils.matches(line, RegexUtils.CONDITION)) {
+                else if (RegexUtils.matches(line, RegexUtils.IF_WHILE_BLOCK)) {
                     scope++;
                     ConditionValidator conditionValidator = new ConditionValidator(symbolTable);
                     try {

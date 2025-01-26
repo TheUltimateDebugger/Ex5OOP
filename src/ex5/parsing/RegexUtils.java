@@ -35,7 +35,8 @@ public class RegexUtils {
     public static final String METHOD_DECLARATION = "(void|" + PRIMITIVE_TYPE + ")" +
             "\\s+" + METHOD_NAME + "\\s*\\(" + PARAMETERS_DECLARATION + "\\)\\s*\\{";
 
-    public static final String VARIABLE_VALUES = "(true|false|\".*\"|'.'|\\d*\\.?\\d*)";
+    public static final String VARIABLE_VALUES = "(true|false|\".*\"|'.'|\\d*\\.?\\d+|\\d+\\.?\\d*|"
+            + VARIABLE_NAME + ")";
 
     /** Regex for a variable declaration. */
     public static final String VARIABLE_DECLARATION = "(final\\s*)?" + PRIMITIVE_TYPE + "\\s+"
@@ -46,8 +47,11 @@ public class RegexUtils {
     /** Regex for a closing scope. */
     public static final String CLOSING_SCOPE = "\\s*}\\s*$";
 
+    public static final String CONDITION = "(" + VARIABLE_VALUES + "|" + VARIABLE_NAME + ")+\\s*"
+            + "((==|\\|\\||\\&\\&)\\s*(" + VARIABLE_VALUES + "|" + VARIABLE_NAME + ")\\s*)*";
+
     /** Regex for an if or while condition. */
-    public static final String CONDITION = "(if|while)\\s*\\(.*\\)\\s*\\{";
+    public static final String IF_WHILE_BLOCK = "(if|while)\\s*\\(" + CONDITION + "\\)\\s*\\{";
 
     /**
      * Compiles and returns a Pattern object for the given regex.
