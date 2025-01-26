@@ -29,7 +29,7 @@ public class Sjavac {
         String line;
         int scope = 0;
         while ((line = parser.readLine()) != null) {
-            System.out.println("the line: " + line + " " + RegexUtils.IF_WHILE_BLOCK);
+            System.out.println("the line: " + line + " " + RegexUtils.VARIABLE_DECLARATION);
             if (!RegexUtils.isCommentOrEmpty(line)) {
                 line = line.trim();
                 if (RegexUtils.matches(line, RegexUtils.CLOSING_SCOPE)) {
