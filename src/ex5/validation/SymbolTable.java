@@ -30,12 +30,12 @@ public class SymbolTable {
     }
 
     public void addGlobalVariable(String name, String type, boolean isInitialized, boolean isFinal) {
-        scopes.getFirst().put(name, new Variable(name, type, isInitialized, isFinal));
+        scopes.get(0).put(name, new Variable(name, type, isInitialized, isFinal));
     }
 
     public void addLocalVariable(String name, String type,
                           boolean isFinal, boolean isInitialized) {
-        scopes.getLast().put(name, new Variable(name, type, isInitialized, isFinal));
+        scopes.get(scopes.size()-1).put(name, new Variable(name, type, isInitialized, isFinal));
     }
 
     public void initializeVariable(int scope, String name) throws ValidationException {
@@ -96,7 +96,7 @@ public class SymbolTable {
         if (scopes.size() == 1) {
             throw new ValidationException("Mismatching opening and closing braces");
         }
-        scopes.getLast().clear();
-        scopes.removeLast();
+        scopes.get(scopes.size()-1).clear();
+        scopes.remove(scopes.size()-1);
     }
 }

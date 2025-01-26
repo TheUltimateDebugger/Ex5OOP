@@ -29,12 +29,14 @@ public class Sjavac {
         String line;
         int scope = 0;
         while ((line = parser.readLine()) != null) {
-            System.out.println("the line: " + line);
+            System.out.println("the line: " + line + " " + RegexUtils.VARIABLE_DECLARATION);
             if (!RegexUtils.isCommentOrEmpty(line)) {
+                line = line.trim();
                 if (RegexUtils.matches(line, RegexUtils.CLOSING_SCOPE)) {
                     scope--;
                 }
                 else if (RegexUtils.matches(line, RegexUtils.VARIABLE_DECLARATION)) {
+                    System.out.println("variable declaration");
                     scope++;
                     VariableValidator variableValidator = new VariableValidator(symbolTable);
                     try {
@@ -62,6 +64,7 @@ public class Sjavac {
                     }
                 }
                 else {
+                    System.out.println("invalid line");
                     return INVALID_CODE;
                 }
             }
@@ -75,6 +78,6 @@ public class Sjavac {
     public static void main(String[] args) {
         String fileName = args[0];
         Sjavac compiler = new Sjavac(fileName);
-        compiler.compile();
+        System.out.println(compiler.compile());
     }
 }

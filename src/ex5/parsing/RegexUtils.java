@@ -13,13 +13,13 @@ public class RegexUtils {
 
     /** Regex for a valid variable name
      * (e.g., starts with a letter, followed by letters, digits, or underscores). */
-    public static final String VARIABLE_NAME = "(?!_+$)(?!.*__)[a-zA-Z_][a-zA-Z0-9_]*";
+    public static final String VARIABLE_NAME = "(?!\\s*_(\\s+|;|,))(?!.*__)[a-zA-Z_][a-zA-Z0-9_]*";
 
     /** Regex for a valid method name (similar to variable name but may follow stricter conventions). */
     public static final String METHOD_NAME = "(?!_+$)(?!.*__)[a-zA-Z_][a-zA-Z0-9_]*";
 
     /** Regex for a primitive type declaration (e.g., int, double, boolean, String). */
-    public static final String PRIMITIVE_TYPE = "(int|double|boolean|String)";
+    public static final String PRIMITIVE_TYPE = "(int|double|boolean|String|char)";
 
     /** Regex for a single-line comment (e.g., // this is a comment). */
     public static final String SINGLE_LINE_COMMENT = "//.*";
@@ -28,12 +28,16 @@ public class RegexUtils {
     public static final String EMPTY_LINE = "\\s*";
 
     /** Regex for a method declaration. */
-    public static final String METHOD_DECLARATION = PRIMITIVE_TYPE +
+    public static final String METHOD_DECLARATION = "(void|" + PRIMITIVE_TYPE + ")" +
             "\\s+" + METHOD_NAME + "\\s*\\(.*\\)\\s*\\{";
 
+    public static final String VARIABLE_VALUES = "(true|false|\".*\"|'.'|\\d*\\.?\\d*)";
+
     /** Regex for a variable declaration. */
-    public static final String VARIABLE_DECLARATION = PRIMITIVE_TYPE +
-            "\\s+" + VARIABLE_NAME + "(\\s*=\\s*.+)?;";
+    public static final String VARIABLE_DECLARATION = "(final\\s*)?" + PRIMITIVE_TYPE + "\\s+"
+            + "(" + VARIABLE_NAME + "(\\s*=\\s*" + VARIABLE_VALUES + ")?\\s*,\\s*)*" + VARIABLE_NAME +
+            "(\\s*=\\s*" + VARIABLE_VALUES + ")?" + "\\s*;";
+
 
     /** Regex for a closing scope. */
     public static final String CLOSING_SCOPE = "\\s*}\\s*$";
