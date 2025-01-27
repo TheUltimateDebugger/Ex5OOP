@@ -12,7 +12,8 @@ public class Sjavac {
     public static final int LEGAL_CODE = 0;
     public static final int INVALID_CODE = 1;
     public static final int IO_ERROR = 2;
-    private final Parser parser;
+    // TODO change back to private, this was only for testing
+    public final Parser parser;
     private final SymbolTable symbolTable;
 
     public Sjavac(String fileName) {
@@ -24,32 +25,44 @@ public class Sjavac {
         symbolTable = new SymbolTable();
     }
 
-    public void initialSweep() throws ValidationException {
+    public int initialSweep() {
         String line;
         ValidatorFactory factory = new ValidatorFactory(symbolTable);
 
         while ((line = parser.readLine()) != null) {
             line = line.trim();
             if (RegexUtils.isCommentOrEmpty(line)) { continue; }
-            Validator validator = factory.getValidatorForSweep(line);
-            if (validator == null) { continue; }
-            validator.validate(line);
+            try {
+                Validator validator = factory.getValidatorForSweep(line);
+                if (validator == null) {
+                    continue;
+                }
+                validator.validate(line);
+            }
+            catch (ValidationException e) { return INVALID_CODE; }
         }
 
         if (symbolTable.getScope() != 0) {
             System.err.println("Unmatched opening/closing braces.");
+            return INVALID_CODE;
         }
+        return LEGAL_CODE;
     }
 
-    public int compile() throws ValidationException {
+    public int compile() {
         String line;
         ValidatorFactory factory = new ValidatorFactory(symbolTable);
         while ((line = parser.readLine()) != null) {
             line = line.trim();
             if (!RegexUtils.isCommentOrEmpty(line)) {
-                Validator validator = factory.getValidator(line);
-                if (validator == null) { continue; }
-                validator.validate(line);
+                try {
+                    Validator validator = factory.getValidator(line);
+                    if (validator == null) {
+                        continue;
+                    }
+                    validator.validate(line);
+                }
+                catch (ValidationException e) { return INVALID_CODE; }
             }
         }
         if (symbolTable.getScope() != 0) {
@@ -61,7 +74,7 @@ public class Sjavac {
     public static void main(String[] args) throws FileNotFoundException, ValidationException {
         String fileName = args[0];
         Sjavac compiler = new Sjavac(fileName);
-        compiler.initialSweep();
+        System.out.println(compiler.initialSweep());
         System.out.println("first pass completed");
         compiler.parser.reset();
         System.out.println(compiler.compile());
