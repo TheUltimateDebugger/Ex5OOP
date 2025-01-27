@@ -1,5 +1,16 @@
-    void     test(  int a ) {
-a = 6;
+boolean a = true;
+
+void foo() {
+	while(true) {
+		if (true) {
+			if(false && a) {
+				while(a) {
+					char p;
+				}
+			}
+
+		}
+
+	}
+	return;
 }
-int a;
-a = 5;

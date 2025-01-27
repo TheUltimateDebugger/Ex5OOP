@@ -15,7 +15,12 @@ public class RegexUtils {
      * (e.g., starts with a letter, followed by letters, digits, or underscores). */
     public static final String VARIABLE_NAME = "[a-zA-Z_][a-zA-Z0-9_]*";
 
-    public static final String ILLEGAL_VARIABLE_NAME = "(.*__*.|_)";
+    /** Regex expression for illegal variable names */
+    public static final String ILLEGAL_VARIABLE_NAME = "(.*__+.|_)";
+
+
+    public static final String ILLEGAL_METHOD_NAME = "(.*__+.|_.*)";
+
 
     /** Regex for a valid method name (similar to variable name but may follow stricter conventions). */
     public static final String METHOD_NAME = "[a-zA-Z_][a-zA-Z0-9_]*";

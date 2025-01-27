@@ -24,7 +24,19 @@ public class VariableValidator implements Validator {
                     value = name.split("=", 2)[1].trim();
                     name = name.split("=", 2)[0].trim();
                 }
+                if (value != null) {
+                    int valueScope = symbolTable.findVariableScope(value);
+                    if ((valueScope >= 0 &&
+                            !symbolTable.isVariableInitialized(valueScope, value)) ||
+                            (value.equals(name) && valueScope == -1)) {
+                        throw new ValidationException("Cannot assign value from null variable '" +
+                                name + "'.");
+                    }
+                }
                 validateDeclaration(name, typeAndNames[0], isFinal, value!=null);
+                if (value == null && isFinal) {
+                    throw new ValidationException("Final variable '" + name + "' cannot be null");
+                }
                 if (value != null) {
                     validateAssignment(name, value, true);
                 }

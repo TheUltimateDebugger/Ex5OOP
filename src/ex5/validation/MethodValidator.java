@@ -39,7 +39,7 @@ public class MethodValidator implements Validator {
     public void validateMethodDeclarationForSweep(String line) throws ValidationException {
         String[] nameAndParams = line.substring(4, line.indexOf('(')).trim().split("\\s+");
         String methodName = nameAndParams[nameAndParams.length - 1];
-        if (methodName.matches(RegexUtils.ILLEGAL_VARIABLE_NAME)) {
+        if (methodName.matches(RegexUtils.ILLEGAL_METHOD_NAME)) {
             throw new ValidationException("Method '" + methodName
                     + "' cannot start with '_' or contain '__'");
         }
@@ -98,7 +98,7 @@ public class MethodValidator implements Validator {
             if (!isValidType(parameterParts[0])) {
                throw new ValidationException("Invalid parameter type: " + parameterParts[0]);
             }
-            for (int i = 1; i < parametersList.size(); i++) {
+            for (int i = 0; i < parametersList.size(); i++) {
                 if (parametersList.get(i)[1].equals(parameterParts[1])) {
                     throw new ValidationException("Duplicate parameter name: " + parameterParts[1]);
                 }

@@ -22,6 +22,7 @@ public class ConditionValidator implements Validator {
         // condition && and || regex for split
         String[] conditions = overallCondition.split(RegexUtils.CONDITION_SPLITTERS);
         for (String condition : conditions) {
+            condition = condition.trim();
             String literalType = getLiteralType(condition);
             if (literalType.isEmpty()) {
                 int lookupScope = symbolTable.findVariableScope(condition);
@@ -31,13 +32,17 @@ public class ConditionValidator implements Validator {
                 if (!symbolTable.isVariableInitialized(lookupScope, condition)) {
                     throw new ValidationException("Variable '" + condition + "' is uninitialized.");
                 }
+                String type = symbolTable.getVariableType(lookupScope, condition);
+                if (!(type.equals("boolean") || type.equals("double") || type.equals("int"))) {
+                    throw new ValidationException("Variable '" + condition + "' has invalid type.");
+                }
             }
             else if (!(literalType.equals("boolean") || literalType.equals("int") ||
                     literalType.equals("double"))) {
                 throw new ValidationException("Literal '" + condition + "' is undefined.");
             }
-            symbolTable.enterScope();
         }
+        symbolTable.enterScope();
     }
 
     private String getLiteralType(String literal) {
