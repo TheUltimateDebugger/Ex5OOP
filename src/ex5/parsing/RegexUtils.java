@@ -35,14 +35,19 @@ public class RegexUtils {
     public static final String METHOD_DECLARATION = "(void|" + PRIMITIVE_TYPE + ")" +
             "\\s+" + METHOD_NAME + "\\s*\\(" + PARAMETERS_DECLARATION + "\\)\\s*\\{";
 
+    public static final String METHOD_CALL = METHOD_NAME + "\\s*(.*)\\";
+
     public static final String VARIABLE_VALUES = "(true|false|\".*\"|'.'|\\d*\\.?\\d+|\\d+\\.?\\d*|"
-            + VARIABLE_NAME + ")";
+            + VARIABLE_NAME + "|" + METHOD_CALL + ")";
 
     /** Regex for a variable declaration. */
     public static final String VARIABLE_DECLARATION = "(final\\s*)?" + PRIMITIVE_TYPE + "\\s+"
             + "(" + VARIABLE_NAME + "(\\s*=\\s*" + VARIABLE_VALUES + ")?\\s*,\\s*)*" + VARIABLE_NAME +
             "(\\s*=\\s*" + VARIABLE_VALUES + ")?" + "\\s*;";
 
+
+    public static final String VARIABLE_VALUE_CHANGE = VARIABLE_NAME + "\\s*=\\s*" + VARIABLE_VALUES
+            + "\\s*;";
 
     /** Regex for a closing scope. */
     public static final String CLOSING_SCOPE = "\\s*}\\s*$";

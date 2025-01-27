@@ -62,8 +62,22 @@ public class Sjavac {
                     } catch (ValidationException e) {
                         return INVALID_CODE;
                     }
+                } else if (RegexUtils.matches(line, RegexUtils.VARIABLE_VALUE_CHANGE)) {
+                    VariableValidator variableValidator = new VariableValidator(symbolTable);
+                    try {
+                        variableValidator.validate(line, scope);
+                    } catch (ValidationException e) {
+                        return INVALID_CODE;
+                    }
                 }
-                else {
+                else if (RegexUtils.matches(line, RegexUtils.METHOD_CALL)) {
+                    MethodValidator methodValidator = new MethodValidator(symbolTable);
+                    try {
+                        methodValidator.validate(line, scope);
+                    } catch (ValidationException e) {
+                        return INVALID_CODE;
+                    }
+                } else {
                     System.out.println("invalid line");
                     return INVALID_CODE;
                 }
