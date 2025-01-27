@@ -27,7 +27,10 @@ public class ValidatorFactory {
         else {
             if (RegexUtils.matches(line, RegexUtils.CLOSING_SCOPE)) {
                 symbolTable.exitScope();
-                if (wasPreviousLineReturn) { isInMethodBody = false; }
+                if (wasPreviousLineReturn) {
+                    isInMethodBody = false;
+                    symbolTable.resetGlobalsToGlobalInitializationState();
+                }
                 returnValue = null;
             } else if (RegexUtils.matches(line, RegexUtils.VARIABLE_DECLARATION)) {
                 if (symbolTable.getScope() == 0) { return null; }

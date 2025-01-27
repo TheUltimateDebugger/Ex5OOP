@@ -8,43 +8,57 @@ import java.util.HashMap;
 
 public class SymbolTable {
     private static class Variable {
-        String name;
-        String type;
-        boolean isInitialized;
-        boolean isFinal;
+        public String name;
+        public String type;
+        public boolean isInitialized;
+        public boolean isFinal;
+        public boolean isUninitializedGlobal;
 
-        Variable(String name, String type, boolean isInitialized, boolean isFinal) {
+        public Variable(String name, String type, boolean isInitialized,
+                        boolean isFinal, boolean isUninitializedGlobal) {
             this.name = name;
             this.type = type;
             this.isInitialized = isInitialized;
             this.isFinal = isFinal;
+            this.isUninitializedGlobal = isUninitializedGlobal;
         }
     }
 
     private ArrayList<HashMap<String, Variable>> scopes;
     private HashMap<String, ArrayList<String[]>> methods;
+    private SymbolTable copy;
 
     public SymbolTable() {
         this.scopes = new ArrayList<>();
         scopes.add(new HashMap<>());
         this.methods = new HashMap<>();
+        this.copy = null;
     }
 
     public void addGlobalVariable(String name, String type, boolean isInitialized, boolean isFinal) {
-        scopes.get(0).put(name, new Variable(name, type, isInitialized, isFinal));
+        scopes.get(0).put(name, new Variable(name, type, isInitialized, isFinal, true));
     }
 
     public void addLocalVariable(String name, String type,
                           boolean isFinal, boolean isInitialized) {
-        scopes.get(scopes.size()-1).put(name, new Variable(name, type, isInitialized, isFinal));
+        scopes.get(scopes.size()-1).put(name, new Variable(name, type, isInitialized, isFinal, true));
     }
 
     public void initializeVariable(int scope, String name) throws ValidationException {
         if (variableExists(scope, name)) {
             scopes.get(scope).get(name).isInitialized = true;
+            if (getScope() == 0) {
+                scopes.get(scope).get(name).isUninitializedGlobal = false;
+            }
         }
         else {
-            throw new ValidationException("Variable " + name + " is not initialized");
+            throw new ValidationException("Variable " + name + " does not exist");
+        }
+    }
+
+    public void resetGlobalsToGlobalInitializationState() {
+        for (Variable var : scopes.get(0).values()) {
+            var.isInitialized = !var.isUninitializedGlobal;
         }
     }
 
@@ -88,7 +102,7 @@ public class SymbolTable {
                 parameter[0] = parameter[0].substring("final".length()).trim();
             }
             scopes.get(scopes.size() - 1).put(parameter[1], new Variable(parameter[1],
-                    parameter[0], true, isFinal));
+                    parameter[0], true, isFinal, true));
         }
     }
 

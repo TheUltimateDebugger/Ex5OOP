@@ -84,6 +84,7 @@ public class VariableValidator implements Validator {
                     "' to variable '" + name + "' of type '" + variableType + "', or variable " +
                     "is uninitialized.");
         }
+        symbolTable.initializeVariable(scope, name);
     }
 
     private boolean isTypeCompatible(String variableType, String value) {
