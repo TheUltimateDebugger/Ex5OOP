@@ -49,13 +49,13 @@ public class Sjavac {
             }
             if (insideMethodBody) { continue; }
             if (RegexUtils.matches(line, RegexUtils.VARIABLE_DECLARATION)) {
-                variableValidator.validate(line, scope);
+                variableValidator.validate(line);
             } else if (RegexUtils.matches(line, RegexUtils.METHOD_DECLARATION)) {
                 scope++;
                 methodValidator.validateMethodDeclaration(line);
                 insideMethodBody = true;
             } else if (RegexUtils.matches(line, RegexUtils.VARIABLE_VALUE_CHANGE)) {
-                variableValidator.validate(line, scope);
+                variableValidator.validate(line);
             } else {
                 throw new ValidationException("Invalid line in global scope: " + line);
             }
@@ -73,7 +73,6 @@ public class Sjavac {
         int scope = 0;
         boolean isInMethodBody = false, wasPreviousLineReturn = false;
         while ((line = parser.readLine()) != null) {
-            System.out.println("the line: " + line + "\n" + RegexUtils.RETURN_STATEMENT);
             if (!RegexUtils.isCommentOrEmpty(line)) {
                 line = line.trim();
                 if (RegexUtils.matches(line, RegexUtils.CLOSING_SCOPE)) {
@@ -88,7 +87,7 @@ public class Sjavac {
                     System.out.println("variable declaration");
                     VariableValidator variableValidator = new VariableValidator(symbolTable);
                     try {
-                        variableValidator.validate(line, scope);
+                        variableValidator.validate(line);
                     } catch (ValidationException e) {
                         return INVALID_CODE;
                     }
@@ -100,7 +99,7 @@ public class Sjavac {
                     if (scope == 1) { continue; }
                     MethodValidator methodValidator = new MethodValidator(symbolTable);
                     try {
-                        methodValidator.validate(line, scope);
+                        methodValidator.validate(line);
                     } catch (ValidationException e) {
                         return INVALID_CODE;
                     }
@@ -110,7 +109,7 @@ public class Sjavac {
                     scope++;
                     ConditionValidator conditionValidator = new ConditionValidator(symbolTable);
                     try {
-                        conditionValidator.validate(line, scope);
+                        conditionValidator.validate(line);
                     } catch (ValidationException e) {
                         return INVALID_CODE;
                     }
@@ -118,7 +117,7 @@ public class Sjavac {
                     System.out.println("variable value change");
                     VariableValidator variableValidator = new VariableValidator(symbolTable);
                     try {
-                        variableValidator.validate(line, scope);
+                        variableValidator.validate(line);
                     } catch (ValidationException e) {
                         return INVALID_CODE;
                     }
@@ -127,7 +126,7 @@ public class Sjavac {
                     System.out.println("method call only");
                     MethodValidator methodValidator = new MethodValidator(symbolTable);
                     try {
-                        methodValidator.validate(line, scope);
+                        methodValidator.validate(line);
                     } catch (ValidationException e) {
                         return INVALID_CODE;
                     }
@@ -136,7 +135,7 @@ public class Sjavac {
                     System.out.println("return statement");
                     MethodValidator methodValidator = new MethodValidator(symbolTable);
                     try {
-                        methodValidator.validate(line, scope);
+                        methodValidator.validate(line);
                     } catch (ValidationException e) {
                         return INVALID_CODE;
                     }

@@ -8,8 +8,8 @@ public class VariableValidator implements Validator {
     public VariableValidator(SymbolTable symbolTable) {
         this.symbolTable = symbolTable;
     }
-    // TODO: remove usage of scope int - we're always at the smallest one.
-    public void validate(String line, int scope) throws ValidationException {
+    public void validate(String line) throws ValidationException {
+        // variable declaration regex (including initialization)
         if (line.matches("^(final\\s+)?(int|double|boolean|char|String)\\s+.+;$")) {
             boolean isFinal = line.startsWith("final");
             if (isFinal) { line = line.substring("final".length()).trim(); }
@@ -23,13 +23,13 @@ public class VariableValidator implements Validator {
                     value = name.split("=", 2)[1].trim();
                     name = name.split("=", 2)[0].trim();
                 }
-                validateDeclaration(scope, name, typeAndNames[0], isFinal, value!=null);
+                validateDeclaration(name, typeAndNames[0], isFinal, value!=null);
                 if (value != null) {
                     validateAssignment(name, value, true);
                 }
             }
         }
-
+        // assignment regex
         else if (line.matches("^[a-zA-Z_][\\w]*\\s*=\\s*.+;$")) {
             String[] variables = line.split(",");
             variables[variables.length - 1] = variables[variables.length - 1].replace(";", "");
@@ -47,9 +47,9 @@ public class VariableValidator implements Validator {
         }
     }
 
-    private void validateDeclaration(int scope, String name, String type,
+    private void validateDeclaration(String name, String type,
                                     boolean isFinal, boolean isInitialized) throws ValidationException {
-        if (symbolTable.variableExists(scope, name)) {
+        if (symbolTable.variableExists(symbolTable.getScope(), name)) {
             throw new ValidationException("Variable '" + name +
                     "' already declared in the current scope.");
         }
@@ -57,7 +57,7 @@ public class VariableValidator implements Validator {
             throw new ValidationException("Invalid type '" + type +
                     "' for variable '" + name + "'.");
         }
-        if (scope == 0) {
+        if (symbolTable.getScope() == 0) {
             symbolTable.addGlobalVariable(name, type, isInitialized, isFinal);
         } else {
             symbolTable.addLocalVariable(name, type, isInitialized, isFinal);
@@ -76,9 +76,9 @@ public class VariableValidator implements Validator {
 
         String variableType = symbolTable.getVariableType(scope, name);
         if (!isTypeCompatible(variableType, value)) {
-            // TODO: change print for uninitialized vars
             throw new ValidationException("Type mismatch: Cannot assign value '" + value +
-                    "' to variable '" + name + "' of type '" + variableType + "'.");
+                    "' to variable '" + name + "' of type '" + variableType + "', or variable" +
+                    "is uninitialized.");
         }
     }
 
@@ -88,6 +88,7 @@ public class VariableValidator implements Validator {
                     symbolTable.getVariableType(symbolTable.findVariableScope(value), value)
             ) && symbolTable.isVariableInitialized(symbolTable.findVariableScope(value), value);
         }
+        // regex matches per each type
         switch (variableType) {
             case "int":
                 return value.matches("-?\\d+");
@@ -106,17 +107,8 @@ public class VariableValidator implements Validator {
     }
 
     private boolean isValidType(String type) {
+        // TODO: add list of types and make this more dynamic
         return type.equals("int") || type.equals("double") || type.equals("boolean") ||
                 type.equals("char") || type.equals("String");
-    }
-
-    // TODO: remove this
-    public static void main(String[] args) throws ValidationException {
-        SymbolTable symbolTable = new SymbolTable();
-        VariableValidator validator = new VariableValidator(symbolTable);
-        validator.validate("int a = 10;", 0);
-        validator.validate("a = 10;", 0);
-        symbolTable.enterScope();
-        validator.validate("int a = 20, b = 30,c=40;", 1);
     }
 }

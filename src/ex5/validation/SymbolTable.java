@@ -81,7 +81,7 @@ public class SymbolTable {
                 isFinal = true;
                 parameter[0] = parameter[0].substring("final".length()).trim();
             }
-            scopes.getLast().put(parameter[1], new Variable(parameter[1],
+            scopes.get(scopes.size() - 1).put(parameter[1], new Variable(parameter[1],
                     parameter[0], true, isFinal));
         }
     }
@@ -104,5 +104,9 @@ public class SymbolTable {
         }
         scopes.get(scopes.size()-1).clear();
         scopes.remove(scopes.size()-1);
+    }
+
+    public int getScope() {
+        return scopes.size() - 1;
     }
 }

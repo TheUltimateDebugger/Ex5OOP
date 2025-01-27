@@ -9,7 +9,8 @@ public class ConditionValidator implements Validator {
         this.symbolTable = symbolTable;
     }
 
-    public void validate(String line, int scope) throws ValidationException {
+    public void validate(String line) throws ValidationException {
+        // if/while regex
         if (line.matches("^(if|while)\\s*\\((.+)\\)\\s*\\{$")) {
             String condition = line.substring(line.indexOf("(") + 1, line.indexOf(")")).trim();
             validateCondition(condition);
@@ -17,6 +18,7 @@ public class ConditionValidator implements Validator {
     }
 
     public void validateCondition(String overallCondition) throws ValidationException {
+        // condition && and || regex for split
         String[] conditions = overallCondition.split("(&&|\\|\\|)");
         for (String condition : conditions) {
             String literalType = getLiteralType(condition);
@@ -37,7 +39,8 @@ public class ConditionValidator implements Validator {
         }
     }
 
-    private String getLiteralType(String literal) throws ValidationException {
+    private String getLiteralType(String literal) {
+        // match literal to type regex
         if (literal.matches("^-?\\d+$")) {
             return "int";
         } else if (literal.matches("^-?\\d+\\.\\d+$")) {
@@ -50,14 +53,5 @@ public class ConditionValidator implements Validator {
             return "char";
         }
         return "";
-    }
-
-    public static void main(String[] args) throws ValidationException {
-        SymbolTable symbolTable = new SymbolTable();
-        ConditionValidator validator = new ConditionValidator(symbolTable);
-        validator.validate("if (-21) {", 0);
-        validator.validate("int a = 1;", 1);
-        validator.validate("}", 1);
-        validator.validate("", 1);
     }
 }

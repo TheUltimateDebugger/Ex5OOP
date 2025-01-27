@@ -10,20 +10,24 @@ public class MethodValidator implements Validator {
     public MethodValidator(SymbolTable symbolTable) {
         this.symbolTable = symbolTable;
     }
-    public void validate(String line, int scope) throws ValidationException {
+    public void validate(String line) throws ValidationException {
+        // declaration regex
         if (line.matches("^void\\s+[a-zA-Z_][\\w]*\\s*\\(.*\\)\\s*\\{$")) {
             validateMethodDeclaration(line);
         }
+        // method call regex
         else if (line.matches("^[a-zA-Z_][\\w]*\\s*\\(.*\\)\\s*;$")) {
             validateMethodCall(line);
         }
-        else if (line.matches("^\\s*return;\\s*$")) {
-            // TODO handle return
+        // return regex
+        else if (line.matches("^\\s*return\\s*;$")) {
+            // the call to this method in case of return is unneeded, but it is good practice
+            // in case we'd like to add functionality to return statements.
         }
         else {
             throw new ValidationException("Invalid method line: " + line);
         }
-        }
+    }
 
     public void validateMethodDeclaration(String line) throws ValidationException {
         String[] nameAndParams = line.substring(4, line.indexOf('(')).trim().split("\\s+");
@@ -65,6 +69,7 @@ public class MethodValidator implements Validator {
     private ArrayList<String[]> parseParameters(String rawParameters)
             throws ValidationException {
         ArrayList<String[]> parametersList = new ArrayList<>();
+        // empty regex
         if (rawParameters == null || rawParameters.matches("^\\s*$")) { return parametersList; }
         String[] parameters = rawParameters.split(",");
         for (String parameter : parameters) {
@@ -118,6 +123,7 @@ public class MethodValidator implements Validator {
     }
 
     private String getLiteralType(String argument) throws ValidationException {
+        // match literal to type regex
         if (argument.matches("^-?\\d+$")) {
             return "int";
         } else if (argument.matches("^-?\\d+\\.\\d+$")) {
@@ -143,12 +149,4 @@ public class MethodValidator implements Validator {
                 type.equals("char") || type.equals("String");
     }
 
-    // TODO: remove this
-    public static void main(String[] args) throws ValidationException {
-        SymbolTable symbolTable = new SymbolTable();
-        MethodValidator validator = new MethodValidator(symbolTable);
-        validator.validate("void test(int test) {", 0);
-        validator.validate("}", 1);
-        validator.validate("test(-2);", 1);
-    }
 }
