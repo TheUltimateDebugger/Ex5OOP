@@ -65,7 +65,7 @@ public class RegexUtils {
             + "((==|\\|\\||\\&\\&)\\s*(" + VARIABLE_VALUES + "|" + VARIABLE_NAME + ")\\s*)*";
 
     /** Regex for an if or while condition. */
-    public static final String IF_WHILE_BLOCK = "^(if|while)\\s*\\(" + CONDITION + "\\)\\s*\\{$";
+    public static final String IF_WHILE_BLOCK = "^(if|while)\\s*\\(\\s*" + CONDITION + "\\s*\\)\\s*\\{$";
 
     /**
      * Compiles and returns a Pattern object for the given regex.
