@@ -101,6 +101,7 @@ public class Sjavac {
                     try {
                         methodValidator.validate(line);
                     } catch (ValidationException e) {
+                        System.out.println(e.getMessage());
                         return INVALID_CODE;
                     }
                 }
@@ -111,6 +112,7 @@ public class Sjavac {
                     try {
                         conditionValidator.validate(line);
                     } catch (ValidationException e) {
+                        System.out.println(e.getMessage());
                         return INVALID_CODE;
                     }
                 } else if (RegexUtils.matches(line, RegexUtils.VARIABLE_VALUE_CHANGE)) {
@@ -119,6 +121,7 @@ public class Sjavac {
                     try {
                         variableValidator.validate(line);
                     } catch (ValidationException e) {
+                        System.out.println(e.getMessage());
                         return INVALID_CODE;
                     }
                 }
@@ -143,8 +146,7 @@ public class Sjavac {
                     continue;
                 }
                 else {
-                    System.out.println("invalid line");
-                    return INVALID_CODE;
+                    throw new ValidationException("Invalid line in global scope: " + line);
                 }
                 wasPreviousLineReturn = false;
             }
@@ -159,6 +161,7 @@ public class Sjavac {
         String fileName = args[0];
         Sjavac compiler = new Sjavac(fileName);
         compiler.initialSweep();
+        System.out.println("first pass completed");
         compiler.parser.reset();
         System.out.println(compiler.compile());
     }

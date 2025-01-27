@@ -62,7 +62,7 @@ public class RegexUtils {
     public static final String CLOSING_SCOPE = "^}$";
 
     public static final String CONDITION = "(" + VARIABLE_VALUES + "|" + VARIABLE_NAME + ")+\\s*"
-            + "((==|\\|\\||\\&\\&)\\s*(" + VARIABLE_VALUES + "|" + VARIABLE_NAME + ")\\s*)*";
+            + "((\\|\\||\\&\\&)\\s*(" + VARIABLE_VALUES + "|" + VARIABLE_NAME + ")\\s*)*";
 
     /** Regex for an if or while condition. */
     public static final String IF_WHILE_BLOCK = "^(if|while)\\s*\\(\\s*" + CONDITION + "\\s*\\)\\s*\\{$";
