@@ -70,7 +70,7 @@ public class Sjavac {
                         return INVALID_CODE;
                     }
                 }
-                else if (RegexUtils.matches(line, RegexUtils.METHOD_CALL)) {
+                else if (RegexUtils.matches(line, RegexUtils.METHOD_CALL_ONLY)) {
                     MethodValidator methodValidator = new MethodValidator(symbolTable);
                     try {
                         methodValidator.validate(line, scope);

@@ -27,6 +27,8 @@ public class RegexUtils {
     /** Regex for an empty line (only spaces or tabs). */
     public static final String EMPTY_LINE = "\\s*";
 
+    public static final String END_LINE = "\\s*;$";
+
     public static final String PARAMETERS_DECLARATION = "(((final\\s*)?" + PRIMITIVE_TYPE + "\\s+"
             + VARIABLE_NAME + "\\s*,\\s*)*" + "((final\\s*)?" + PRIMITIVE_TYPE + "\\s+"
             + VARIABLE_NAME + "\\s*)+|)";
@@ -35,28 +37,30 @@ public class RegexUtils {
     public static final String METHOD_DECLARATION = "(void|" + PRIMITIVE_TYPE + ")" +
             "\\s+" + METHOD_NAME + "\\s*\\(" + PARAMETERS_DECLARATION + "\\)\\s*\\{";
 
-    public static final String METHOD_CALL = METHOD_NAME + "\\s*(.*)\\";
+    public static final String METHOD_CALL = METHOD_NAME + "\\s*\\(.*\\)";
 
     public static final String VARIABLE_VALUES = "(true|false|\".*\"|'.'|\\d*\\.?\\d+|\\d+\\.?\\d*|"
-            + VARIABLE_NAME + "|" + METHOD_CALL + ")";
+            + METHOD_CALL + "|" + VARIABLE_NAME + ")";
+
+    public static final String METHOD_CALL_ONLY = "^" + METHOD_NAME + "\\s*\\(.*\\)\\s*;$";
 
     /** Regex for a variable declaration. */
-    public static final String VARIABLE_DECLARATION = "(final\\s*)?" + PRIMITIVE_TYPE + "\\s+"
+    public static final String VARIABLE_DECLARATION = "^(final\\s*)?" + PRIMITIVE_TYPE + "\\s+"
             + "(" + VARIABLE_NAME + "(\\s*=\\s*" + VARIABLE_VALUES + ")?\\s*,\\s*)*" + VARIABLE_NAME +
-            "(\\s*=\\s*" + VARIABLE_VALUES + ")?" + "\\s*;";
+            "(\\s*=\\s*" + VARIABLE_VALUES + ")?" + END_LINE;
 
 
-    public static final String VARIABLE_VALUE_CHANGE = VARIABLE_NAME + "\\s*=\\s*" + VARIABLE_VALUES
+    public static final String VARIABLE_VALUE_CHANGE = "^" + VARIABLE_NAME + "\\s*=\\s*" + VARIABLE_VALUES
             + "\\s*;";
 
     /** Regex for a closing scope. */
-    public static final String CLOSING_SCOPE = "\\s*}\\s*$";
+    public static final String CLOSING_SCOPE = "^}$";
 
     public static final String CONDITION = "(" + VARIABLE_VALUES + "|" + VARIABLE_NAME + ")+\\s*"
             + "((==|\\|\\||\\&\\&)\\s*(" + VARIABLE_VALUES + "|" + VARIABLE_NAME + ")\\s*)*";
 
     /** Regex for an if or while condition. */
-    public static final String IF_WHILE_BLOCK = "(if|while)\\s*\\(" + CONDITION + "\\)\\s*\\{";
+    public static final String IF_WHILE_BLOCK = "^(if|while)\\s*\\(" + CONDITION + "\\)\\s*\\{$";
 
     /**
      * Compiles and returns a Pattern object for the given regex.
