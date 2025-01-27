@@ -39,7 +39,7 @@ public class RegexUtils {
 
     public static final String METHOD_CALL = METHOD_NAME + "\\s*\\(.*\\)";
 
-    public static final String VARIABLE_VALUES = "(true|false|\".*\"|'.'|-?\\d*\\.?\\d+|-?\\d+\\.?\\d*|"
+    public static final String VARIABLE_VALUES = "(true|false|\".*\"|'.'|(-|\\+)?\\d*\\.?\\d+|(-|\\+)?\\d+\\.?\\d*|"
             + METHOD_CALL + "|" + VARIABLE_NAME + ")";
 
     public static final String METHOD_CALL_ONLY = "^" + METHOD_NAME + "\\s*\\(.*\\)\\s*;$";
@@ -52,8 +52,11 @@ public class RegexUtils {
             "(\\s*=\\s*" + VARIABLE_VALUES + ")?" + END_LINE;
 
 
-    public static final String VARIABLE_VALUE_CHANGE = "^(" + VARIABLE_NAME + "\\s*=\\s*" + VARIABLE_VALUES
-           + "\\s*,\\s*)*" + VARIABLE_NAME + "\\s*=\\s*" + VARIABLE_VALUES + END_LINE;
+    public static final String VARIABLE_VALUE_CHANGE = "^" + VARIABLE_NAME + "\\s*=\\s*" + VARIABLE_VALUES
+            + "\\s*;";
+
+    /** open scope regex */
+    public static final String OPENING_SCOPE = "^.*}\\s*$";
 
     /** Regex for a closing scope. */
     public static final String CLOSING_SCOPE = "^}$";

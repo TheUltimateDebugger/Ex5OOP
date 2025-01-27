@@ -9,6 +9,8 @@ import ex5.validation.MethodValidator;
 import ex5.validation.SymbolTable;
 import ex5.validation.VariableValidator;
 
+import java.io.FileNotFoundException;
+
 public class Sjavac {
     public static final int LEGAL_CODE = 0;
     public static final int INVALID_CODE = 1;
@@ -25,19 +27,65 @@ public class Sjavac {
         symbolTable = new SymbolTable();
     }
 
-    public int compile() {
+    public void initialSweep() throws ValidationException {
+        String line;
+        int scope = 0; // Global scope
+        boolean insideMethodBody = false; // Track if we're inside a method body
+
+        VariableValidator variableValidator = new VariableValidator(symbolTable);
+        MethodValidator methodValidator = new MethodValidator(symbolTable);
+
+        while ((line = parser.readLine()) != null) {
+            line = line.trim();
+            if (RegexUtils.isCommentOrEmpty(line)) { continue; }
+            if (RegexUtils.matches(line, RegexUtils.IF_WHILE_BLOCK)) {
+                scope++;
+                continue;
+            }
+            if (RegexUtils.matches(line, RegexUtils.CLOSING_SCOPE)) {
+                scope--;
+                if (scope == 0) { insideMethodBody = false; }
+                continue;
+            }
+            if (insideMethodBody) { continue; }
+            if (RegexUtils.matches(line, RegexUtils.VARIABLE_DECLARATION)) {
+                variableValidator.validate(line, scope);
+            } else if (RegexUtils.matches(line, RegexUtils.METHOD_DECLARATION)) {
+                scope++;
+                methodValidator.validateMethodDeclaration(line);
+                insideMethodBody = true;
+            } else if (RegexUtils.matches(line, RegexUtils.VARIABLE_VALUE_CHANGE)) {
+                variableValidator.validate(line, scope);
+            } else {
+                throw new ValidationException("Invalid line in global scope: " + line);
+            }
+
+        }
+
+        if (scope != 0) {
+            System.err.println("Unmatched opening/closing braces.");
+        }
+
+    }
+
+    public int compile() throws ValidationException {
         String line;
         int scope = 0;
+        boolean isInMethodBody = false, wasPreviousLineReturn = false;
         while ((line = parser.readLine()) != null) {
             System.out.println("the line: " + line + "\n" + RegexUtils.RETURN_STATEMENT);
             if (!RegexUtils.isCommentOrEmpty(line)) {
                 line = line.trim();
                 if (RegexUtils.matches(line, RegexUtils.CLOSING_SCOPE)) {
                     scope--;
+                    symbolTable.exitScope();
+                    if (wasPreviousLineReturn) {
+                        isInMethodBody = false;
+                    }
                 }
                 else if (RegexUtils.matches(line, RegexUtils.VARIABLE_DECLARATION)) {
+                    if (scope  == 0) { continue; }
                     System.out.println("variable declaration");
-                    scope++;
                     VariableValidator variableValidator = new VariableValidator(symbolTable);
                     try {
                         variableValidator.validate(line, scope);
@@ -47,6 +95,9 @@ public class Sjavac {
                 }
                 else if (RegexUtils.matches(line, RegexUtils.METHOD_DECLARATION)) {
                     scope++;
+                    if (isInMethodBody) { throw new ValidationException("Cannot declare method inside method"); }
+                    isInMethodBody = true;
+                    if (scope == 1) { continue; }
                     MethodValidator methodValidator = new MethodValidator(symbolTable);
                     try {
                         methodValidator.validate(line, scope);
@@ -89,11 +140,14 @@ public class Sjavac {
                     } catch (ValidationException e) {
                         return INVALID_CODE;
                     }
+                    wasPreviousLineReturn = true;
+                    continue;
                 }
                 else {
                     System.out.println("invalid line");
                     return INVALID_CODE;
                 }
+                wasPreviousLineReturn = false;
             }
         }
         if (scope != 0) {
@@ -102,9 +156,11 @@ public class Sjavac {
         return LEGAL_CODE;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException, ValidationException {
         String fileName = args[0];
         Sjavac compiler = new Sjavac(fileName);
+        compiler.initialSweep();
+        compiler.parser.reset();
         System.out.println(compiler.compile());
     }
 }

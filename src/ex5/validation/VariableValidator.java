@@ -12,7 +12,7 @@ public class VariableValidator implements Validator {
     public void validate(String line, int scope) throws ValidationException {
         if (line.matches("^(final\\s+)?(int|double|boolean|char|String)\\s+.+;$")) {
             boolean isFinal = line.startsWith("final");
-            if (isFinal) { line = line.substring("final".length()); }
+            if (isFinal) { line = line.substring("final".length()).trim(); }
             String[] typeAndNames = line.split("\\s+", 2);
             String[] names = typeAndNames[1].split(",");
             names[names.length - 1] = names[names.length - 1].replace(";", "");
@@ -23,9 +23,9 @@ public class VariableValidator implements Validator {
                     value = name.split("=", 2)[1].trim();
                     name = name.split("=", 2)[0].trim();
                 }
-                validateDeclaration(scope, name, typeAndNames[0], isFinal, value==null);
+                validateDeclaration(scope, name, typeAndNames[0], isFinal, value!=null);
                 if (value != null) {
-                    validateAssignment(name, value);
+                    validateAssignment(name, value, true);
                 }
             }
         }
@@ -38,7 +38,7 @@ public class VariableValidator implements Validator {
                 if (tokens.length != 2) {
                     throw new ValidationException("Invalid assignment syntax: " + line);
                 }
-                validateAssignment(tokens[0].trim(), tokens[1].trim());
+                validateAssignment(tokens[0].trim(), tokens[1].trim(), false);
             }
         }
 
@@ -64,13 +64,13 @@ public class VariableValidator implements Validator {
         }
     }
 
-    private void validateAssignment(String name, String value) throws ValidationException {
+    private void validateAssignment(String name, String value, boolean isDeclaration) throws ValidationException {
         int scope = symbolTable.findVariableScope(name);
         if (scope == -1) {
             throw new ValidationException("Variable '" + name +
                     "' does not exist in the current or parent scopes.");
         }
-        if (symbolTable.isVariableFinal(scope, name)) {
+        if (!isDeclaration && symbolTable.isVariableFinal(scope, name)) {
             throw new ValidationException("Cannot assign to final variable '" + name + "'.");
         }
 

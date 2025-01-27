@@ -7,7 +7,6 @@ import java.util.ArrayList;
 public class MethodValidator implements Validator {
     private final SymbolTable symbolTable;
 
-    // TODO: implement memory so that nested methods cannot be declared
     public MethodValidator(SymbolTable symbolTable) {
         this.symbolTable = symbolTable;
     }
@@ -18,11 +17,8 @@ public class MethodValidator implements Validator {
         else if (line.matches("^[a-zA-Z_][\\w]*\\s*\\(.*\\)\\s*;$")) {
             validateMethodCall(line);
         }
-        else if (line.matches("^\\s*}\\s*$")) {
-            symbolTable.exitScope();
-        }
-        else if (line.matches("^return;\\s*;$")) {
-            // TODO: handle return
+        else if (line.matches("^\\s*return;\\s*$")) {
+            // TODO handle return
         }
         else {
             throw new ValidationException("Invalid method line: " + line);
@@ -72,7 +68,7 @@ public class MethodValidator implements Validator {
         if (rawParameters == null || rawParameters.matches("^\\s*$")) { return parametersList; }
         String[] parameters = rawParameters.split(",");
         for (String parameter : parameters) {
-            String[] parameterParts = parameter.split("\\s+", 3);
+            String[] parameterParts = parameter.trim().split("\\s+", 3);
             if (parameterParts.length == 3) {
                 if (!parameterParts[0].equals("final")) {
                     throw new ValidationException("Parameter '" + parameterParts[0] +

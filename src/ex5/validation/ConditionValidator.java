@@ -14,9 +14,6 @@ public class ConditionValidator implements Validator {
             String condition = line.substring(line.indexOf("(") + 1, line.indexOf(")")).trim();
             validateCondition(condition);
         }
-        if (line.matches("$\\s*}\\s*")) {
-            symbolTable.exitScope();
-        }
     }
 
     public void validateCondition(String overallCondition) throws ValidationException {
