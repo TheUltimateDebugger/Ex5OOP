@@ -29,7 +29,10 @@ public class RegexUtils {
     public static final String SINGLE_LINE_COMMENT = "//.*";
 
     /** Empty line: contains only spaces or tabs. */
-    public static final String EMPTY_LINE = "\\s*";
+    public static final String EMPTY_LINE = "^\\s*$";
+
+    /** One or more spaces. */
+    public static final String SPACES = "\\s+";
 
     /** Line end: optional spaces followed by a semicolon. */
     public static final String END_LINE = "\\s*;$";
