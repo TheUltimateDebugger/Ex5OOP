@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 /**
  * A utility class with regex patterns and helper methods for validating and parsing s-Java code.
  * The class assumes that it deals with lines that has been trimmed.
+ * @author Tomer Zilberman
  */
 public class RegexUtils {
 
