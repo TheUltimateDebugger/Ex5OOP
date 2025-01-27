@@ -52,7 +52,6 @@ public class MethodValidator implements Validator {
     }
 
     public void validateMethodCall(String line) throws ValidationException {
-        // TODO: check requirements for whitespaces (in general, not just this case)
         String methodName = line.substring(0, line.indexOf('(')).trim();
         if (!symbolTable.methodExists(methodName)) {
             throw new ValidationException("Method '" + methodName + "' does not exist.");
