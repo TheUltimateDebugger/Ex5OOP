@@ -29,7 +29,7 @@ public class Sjavac {
         String line;
         int scope = 0;
         while ((line = parser.readLine()) != null) {
-            System.out.println("the line: " + line + " " + RegexUtils.VARIABLE_DECLARATION);
+            System.out.println("the line: " + line + "\n" + RegexUtils.VARIABLE_VALUES);
             if (!RegexUtils.isCommentOrEmpty(line)) {
                 line = line.trim();
                 if (RegexUtils.matches(line, RegexUtils.CLOSING_SCOPE)) {
@@ -55,6 +55,7 @@ public class Sjavac {
                     }
                 }
                 else if (RegexUtils.matches(line, RegexUtils.IF_WHILE_BLOCK)) {
+                    System.out.println("if while block");
                     scope++;
                     ConditionValidator conditionValidator = new ConditionValidator(symbolTable);
                     try {
@@ -63,6 +64,7 @@ public class Sjavac {
                         return INVALID_CODE;
                     }
                 } else if (RegexUtils.matches(line, RegexUtils.VARIABLE_VALUE_CHANGE)) {
+                    System.out.println("variable value change");
                     VariableValidator variableValidator = new VariableValidator(symbolTable);
                     try {
                         variableValidator.validate(line, scope);
@@ -71,6 +73,7 @@ public class Sjavac {
                     }
                 }
                 else if (RegexUtils.matches(line, RegexUtils.METHOD_CALL_ONLY)) {
+                    System.out.println("method call only");
                     MethodValidator methodValidator = new MethodValidator(symbolTable);
                     try {
                         methodValidator.validate(line, scope);

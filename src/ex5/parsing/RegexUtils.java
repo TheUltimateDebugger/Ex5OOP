@@ -50,8 +50,8 @@ public class RegexUtils {
             "(\\s*=\\s*" + VARIABLE_VALUES + ")?" + END_LINE;
 
 
-    public static final String VARIABLE_VALUE_CHANGE = "^" + VARIABLE_NAME + "\\s*=\\s*" + VARIABLE_VALUES
-            + "\\s*;";
+    public static final String VARIABLE_VALUE_CHANGE = "^(" + VARIABLE_NAME + "\\s*=\\s*" + VARIABLE_VALUES
+           + "\\s*,\\s*)*" + VARIABLE_NAME + "\\s*=\\s*" + VARIABLE_VALUES + END_LINE;
 
     /** Regex for a closing scope. */
     public static final String CLOSING_SCOPE = "^}$";
