@@ -1,6 +1,7 @@
 package ex5.validation;
 
 import ex5.exceptions.ValidationException;
+import ex5.parsing.RegexUtils;
 
 public class ConditionValidator implements Validator {
     SymbolTable symbolTable;
@@ -11,7 +12,7 @@ public class ConditionValidator implements Validator {
 
     public void validate(String line) throws ValidationException {
         // if/while regex
-        if (line.matches("^\\s*(if|while)\\s*\\((.+)\\)\\s*\\{$")) {
+        if (line.matches(RegexUtils.IF_WHILE_BLOCK)) {
             String condition = line.substring(line.indexOf("(") + 1, line.indexOf(")")).trim();
             validateCondition(condition);
         }
@@ -19,7 +20,7 @@ public class ConditionValidator implements Validator {
 
     public void validateCondition(String overallCondition) throws ValidationException {
         // condition && and || regex for split
-        String[] conditions = overallCondition.split("(&&|\\|\\|)");
+        String[] conditions = overallCondition.split(RegexUtils.CONDITION_SPLITTERS);
         for (String condition : conditions) {
             String literalType = getLiteralType(condition);
             if (literalType.isEmpty()) {
@@ -41,15 +42,15 @@ public class ConditionValidator implements Validator {
 
     private String getLiteralType(String literal) {
         // match literal to type regex
-        if (literal.matches("^-?\\d+$")) {
+        if (literal.matches(RegexUtils.INTEGER_ONLY)) {
             return "int";
-        } else if (literal.matches("^-?\\d+\\.\\d+$")) {
+        } else if (literal.matches(RegexUtils.DOUBLE_ONLY)) {
             return "double";
-        } else if (literal.equals("true") || literal.equals("false")) {
+        } else if (literal.matches(RegexUtils.BOOLEAN_ONLY)) {
             return "boolean";
-        } else if (literal.matches("^\".*\"$")) {
+        } else if (literal.matches(RegexUtils.STRING_ONLY)) {
             return "String";
-        } else if (literal.matches("^'.'$")) {
+        } else if (literal.matches(RegexUtils.CHAR_ONLY)) {
             return "char";
         }
         return "";

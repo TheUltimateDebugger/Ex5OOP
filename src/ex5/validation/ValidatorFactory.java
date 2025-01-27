@@ -35,7 +35,7 @@ public class ValidatorFactory {
             } else if (RegexUtils.matches(line, RegexUtils.VARIABLE_DECLARATION)) {
                 if (symbolTable.getScope() == 0) { return null; }
                 returnValue = variableValidator;
-            } else if (RegexUtils.matches(line, RegexUtils.METHOD_DECLARATION)) {
+            } else if (RegexUtils.matches(line, RegexUtils.METHOD_DECLARATION_ONLY)) {
                 if (isInMethodBody) {
                     throw new ValidationException("Cannot declare method inside method");
                 }
@@ -72,7 +72,7 @@ public class ValidatorFactory {
         if (isInMethodBody) { return null; }
         if (RegexUtils.matches(line, RegexUtils.VARIABLE_DECLARATION)) {
             return variableValidator;
-        } else if (RegexUtils.matches(line, RegexUtils.METHOD_DECLARATION)) {
+        } else if (RegexUtils.matches(line, RegexUtils.METHOD_DECLARATION_ONLY)) {
             methodValidator.validateMethodDeclarationForSweep(line);
             isInMethodBody = true;
             return null;

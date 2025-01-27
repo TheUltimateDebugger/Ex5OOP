@@ -15,6 +15,8 @@ public class RegexUtils {
      * (e.g., starts with a letter, followed by letters, digits, or underscores). */
     public static final String VARIABLE_NAME = "[a-zA-Z_][a-zA-Z0-9_]*";
 
+    public static final String ILLEGAL_VARIABLE_NAME = "(.*__*.|_)";
+
     /** Regex for a valid method name (similar to variable name but may follow stricter conventions). */
     public static final String METHOD_NAME = "[a-zA-Z_][a-zA-Z0-9_]*";
 
@@ -29,14 +31,23 @@ public class RegexUtils {
 
     public static final String END_LINE = "\\s*;$";
 
+
     /** Regex for a method declaration. */
-    public static final String METHOD_DECLARATION = "void" +
-            "\\s+" + METHOD_NAME + "\\s*\\(.*\\)\\s*\\{";
+    public static final String METHOD_DECLARATION_ONLY = "^void" +
+            "\\s+" + METHOD_NAME + "\\s*\\(.*\\)\\s*\\{$";
 
-    public static final String METHOD_CALL = METHOD_NAME + "\\s*\\(.*\\)";
+    public static final String INTEGER_ONLY = "^-?\\d+$";
 
-    public static final String VARIABLE_VALUES = "(true|false|\".*\"|'.'|(-|\\+)?\\d*\\.?\\d+|(-|\\+)?\\d+\\.?\\d*|"
-            + METHOD_CALL + "|" + VARIABLE_NAME + ")";
+    public static final String DOUBLE_ONLY = "(-|\\+)?(\\d*\\.?\\d+|\\d+\\.?\\d*)";
+
+    public static final String BOOLEAN_ONLY = "^(true|false)$";
+
+    public static final String STRING_ONLY = "^\".*\"$";
+
+    public static final String CHAR_ONLY = "^'.'$";
+
+    public static final String VARIABLE_VALUES =
+            "(true|false|\".*\"|'.'|(-|\\+)?\\d*\\.?\\d+|(-|\\+)?\\d+\\.?\\d*|" + VARIABLE_NAME + ")";
 
     public static final String METHOD_CALL_ONLY = "^" + METHOD_NAME + "\\s*\\(.*\\)\\s*;$";
 
@@ -53,6 +64,8 @@ public class RegexUtils {
 
     /** Regex for a closing scope. */
     public static final String CLOSING_SCOPE = "^}$";
+
+    public static final String CONDITION_SPLITTERS = "(&&|\\|\\|)";
 
     /** Regex for an if or while condition. */
     public static final String IF_WHILE_BLOCK = "^(if|while)\\s*\\(.+\\)\\s*\\{$";

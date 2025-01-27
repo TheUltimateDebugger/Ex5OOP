@@ -1,6 +1,7 @@
 package ex5.validation;
 
 import ex5.exceptions.ValidationException;
+import ex5.parsing.RegexUtils;
 
 public class VariableValidator implements Validator {
     private SymbolTable symbolTable;
@@ -10,7 +11,7 @@ public class VariableValidator implements Validator {
     }
     public void validate(String line) throws ValidationException {
         // variable declaration regex (including initialization)
-        if (line.matches("^(final\\s+)?(int|double|boolean|char|String)\\s+.+;$")) {
+        if (line.matches(RegexUtils.VARIABLE_DECLARATION)) {
             boolean isFinal = line.startsWith("final");
             if (isFinal) { line = line.substring("final".length()).trim(); }
             String[] typeAndNames = line.split("\\s+", 2);
@@ -30,7 +31,7 @@ public class VariableValidator implements Validator {
             }
         }
         // assignment regex
-        else if (line.matches("^[a-zA-Z_][\\w]*\\s*=\\s*.+;$")) {
+        else if (line.matches(RegexUtils.VARIABLE_VALUE_CHANGE)) {
             String[] variables = line.split(",");
             variables[variables.length - 1] = variables[variables.length - 1].replace(";", "");
             for (String variable : variables) {
@@ -49,7 +50,7 @@ public class VariableValidator implements Validator {
 
     private void validateDeclaration(String name, String type,
                                     boolean isFinal, boolean isInitialized) throws ValidationException {
-        if (name.matches("(.*__.*|_)")) {
+        if (name.matches(RegexUtils.ILLEGAL_VARIABLE_NAME)) {
             throw new ValidationException("Variable '" + name +
                     "' cannot have '__' in it or be only '_'");
         }
@@ -93,19 +94,19 @@ public class VariableValidator implements Validator {
                     symbolTable.getVariableType(symbolTable.findVariableScope(value), value)
             ) && symbolTable.isVariableInitialized(symbolTable.findVariableScope(value), value);
         }
+        value = value.trim();
         // regex matches per each type
         switch (variableType) {
             case "int":
-                return value.matches("-?\\d+");
+                return value.matches(RegexUtils.INTEGER_ONLY);
             case "double":
-                return value.matches("-?\\d+(\\.\\d+)?");
+                return value.matches(RegexUtils.DOUBLE_ONLY);
             case "boolean":
-                return value.equals("true") || value.equals("false") ||
-                        value.matches("-?\\d+(\\.\\d+)?");
+                return value.matches(RegexUtils.BOOLEAN_ONLY) || value.matches(RegexUtils.DOUBLE_ONLY);
             case "char":
-                return value.matches("'.'");
+                return value.matches(RegexUtils.CHAR_ONLY);
             case "String":
-                return value.matches("\".*\"");
+                return value.matches(RegexUtils.STRING_ONLY);
             default:
                 return false;
         }

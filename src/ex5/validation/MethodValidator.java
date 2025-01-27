@@ -1,6 +1,7 @@
 package ex5.validation;
 
 import ex5.exceptions.ValidationException;
+import ex5.parsing.RegexUtils;
 
 import java.util.ArrayList;
 
@@ -12,15 +13,15 @@ public class MethodValidator implements Validator {
     }
     public void validate(String line) throws ValidationException {
         // declaration regex
-        if (line.matches("^\\s*void\\s+[a-zA-Z_][\\w]*\\s*\\(.*\\)\\s*\\{$")) {
+        if (line.matches(RegexUtils.METHOD_DECLARATION_ONLY)) {
             validateMethodDeclaration(line);
         }
         // method call regex
-        else if (line.matches("^\\s*[a-zA-Z_][\\w]*\\s*\\(.*\\)\\s*;$")) {
+        else if (line.matches(RegexUtils.METHOD_CALL_ONLY)) {
             validateMethodCall(line);
         }
         // return regex
-        else if (line.matches("^\\s*return\\s*;$")) {
+        else if (line.matches(RegexUtils.RETURN_STATEMENT)) {
             // the call to this method in case of return is unneeded, but it is good practice
             // in case we'd like to add functionality to return statements.
         }
@@ -38,7 +39,7 @@ public class MethodValidator implements Validator {
     public void validateMethodDeclarationForSweep(String line) throws ValidationException {
         String[] nameAndParams = line.substring(4, line.indexOf('(')).trim().split("\\s+");
         String methodName = nameAndParams[nameAndParams.length - 1];
-        if (methodName.matches("(.*__*.|_)")) {
+        if (methodName.matches(RegexUtils.ILLEGAL_VARIABLE_NAME)) {
             throw new ValidationException("Method '" + methodName
                     + "' cannot start with '_' or contain '__'");
         }

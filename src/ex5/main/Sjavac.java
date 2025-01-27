@@ -1,7 +1,6 @@
 package ex5.main;
 
 import ex5.exceptions.FileException;
-import ex5.exceptions.SyntaxException;
 import ex5.exceptions.ValidationException;
 import ex5.parsing.Parser;
 import ex5.parsing.RegexUtils;
@@ -13,8 +12,8 @@ public class Sjavac {
     public static final int LEGAL_CODE = 0;
     public static final int INVALID_CODE = 1;
     public static final int IO_ERROR = 2;
-    private Parser parser;
-    private SymbolTable symbolTable;
+    private final Parser parser;
+    private final SymbolTable symbolTable;
 
     public Sjavac(String fileName) {
         try {
@@ -46,12 +45,10 @@ public class Sjavac {
         String line;
         ValidatorFactory factory = new ValidatorFactory(symbolTable);
         while ((line = parser.readLine()) != null) {
+            line = line.trim();
             if (!RegexUtils.isCommentOrEmpty(line)) {
                 Validator validator = factory.getValidator(line);
                 if (validator == null) { continue; }
-                // TODO: uncomment
-//                try { validator.validate(line); }
-//                catch (ValidationException e) { return INVALID_CODE; }
                 validator.validate(line);
             }
         }
