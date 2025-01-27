@@ -95,7 +95,7 @@ public class MethodValidator implements Validator {
             if (parameterParts.length != 2) {
                 throw new ValidationException("Invalid parameter syntax: " + parameter);
             }
-            if (!isValidType(parameterParts[0])) {
+            if (!RegexUtils.isValidType(parameterParts[0])) {
                throw new ValidationException("Invalid parameter type: " + parameterParts[0]);
             }
             for (int i = 0; i < parametersList.size(); i++) {
@@ -125,38 +125,15 @@ public class MethodValidator implements Validator {
                 type = symbolTable.getVariableType(argScope, arg);
             }
             else {
-                type = getLiteralType(arg);
+                type = RegexUtils.getLiteralType(arg);
+                if (type.isEmpty()) {
+                    throw new ValidationException("Argument '" + arg + "' is of unknown type");
+                }
             }
             arguments.add(new String[]{type, arg});
         }
         return arguments;
     }
 
-    private String getLiteralType(String argument) throws ValidationException {
-        // match literal to type regex
-        if (argument.matches("^-?\\d+$")) {
-            return "int";
-        } else if (argument.matches("^-?\\d+\\.\\d+$")) {
-            return "double";
-        } else if (argument.equals("true") || argument.equals("false")) {
-            return "boolean";
-        } else if (argument.matches("^\".*\"$")) {
-            return "String";
-        } else if (argument.matches("^'.'$")) {
-            return "char";
-        }
-        else {
-            throw new ValidationException("Argument '" + argument + "' is of unknown type");
-        }
-    }
-
-    private boolean isValidType(String type) {
-        if (type.contains("final")) {
-            type = type.replace("final", "");
-        }
-        type = type.trim();
-        return type.equals("int") || type.equals("double") || type.equals("boolean") ||
-                type.equals("char") || type.equals("String");
-    }
 
 }
