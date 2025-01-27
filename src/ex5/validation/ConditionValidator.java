@@ -23,7 +23,7 @@ public class ConditionValidator implements Validator {
         String[] conditions = overallCondition.split(RegexUtils.CONDITION_SPLITTERS);
         for (String condition : conditions) {
             condition = condition.trim();
-            String literalType = getLiteralType(condition);
+            String literalType = RegexUtils.getLiteralType(condition);
             if (literalType.isEmpty()) {
                 int lookupScope = symbolTable.findVariableScope(condition);
                 if (lookupScope == -1) {
@@ -45,19 +45,4 @@ public class ConditionValidator implements Validator {
         symbolTable.enterScope();
     }
 
-    private String getLiteralType(String literal) {
-        // match literal to type regex
-        if (literal.matches(RegexUtils.INTEGER_ONLY)) {
-            return "int";
-        } else if (literal.matches(RegexUtils.DOUBLE_ONLY)) {
-            return "double";
-        } else if (literal.matches(RegexUtils.BOOLEAN_ONLY)) {
-            return "boolean";
-        } else if (literal.matches(RegexUtils.STRING_ONLY)) {
-            return "String";
-        } else if (literal.matches(RegexUtils.CHAR_ONLY)) {
-            return "char";
-        }
-        return "";
-    }
 }

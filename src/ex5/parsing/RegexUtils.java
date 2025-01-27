@@ -143,4 +143,28 @@ public class RegexUtils {
         return matches(line, SINGLE_LINE_COMMENT) || matches(line, EMPTY_LINE);
     }
 
+    public static String getLiteralType(String argument) {
+        // match literal to type regex
+        if (argument.matches("^-?\\d+$")) {
+            return "int";
+        } else if (argument.matches("^-?\\d+\\.\\d+$")) {
+            return "double";
+        } else if (argument.equals("true") || argument.equals("false")) {
+            return "boolean";
+        } else if (argument.matches("^\".*\"$")) {
+            return "String";
+        } else if (argument.matches("^'.'$")) {
+            return "char";
+        }
+        return "";
+    }
+
+    public static boolean isValidType(String type) {
+        if (type.contains("final")) {
+            type = type.replace("final", "");
+        }
+        type = type.trim();
+        return type.equals("int") || type.equals("double") || type.equals("boolean") ||
+                type.equals("char") || type.equals("String");
+    }
 }
