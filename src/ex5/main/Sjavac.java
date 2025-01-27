@@ -1,13 +1,11 @@
 package ex5.main;
 
 import ex5.exceptions.FileException;
+import ex5.exceptions.SyntaxException;
 import ex5.exceptions.ValidationException;
 import ex5.parsing.Parser;
 import ex5.parsing.RegexUtils;
-import ex5.validation.ConditionValidator;
-import ex5.validation.MethodValidator;
-import ex5.validation.SymbolTable;
-import ex5.validation.VariableValidator;
+import ex5.validation.*;
 
 import java.io.FileNotFoundException;
 
@@ -44,7 +42,10 @@ public class Sjavac {
             }
             if (RegexUtils.matches(line, RegexUtils.CLOSING_SCOPE)) {
                 scope--;
-                if (scope == 0) { insideMethodBody = false; }
+                if (scope == 0) {
+                    insideMethodBody = false;
+                    symbolTable.exitScope();
+                }
                 continue;
             }
             if (insideMethodBody) { continue; }
@@ -52,7 +53,7 @@ public class Sjavac {
                 variableValidator.validate(line);
             } else if (RegexUtils.matches(line, RegexUtils.METHOD_DECLARATION)) {
                 scope++;
-                methodValidator.validateMethodDeclaration(line);
+                methodValidator.validateMethodDeclarationForSweep(line);
                 insideMethodBody = true;
             } else if (RegexUtils.matches(line, RegexUtils.VARIABLE_VALUE_CHANGE)) {
                 variableValidator.validate(line);
@@ -70,88 +71,17 @@ public class Sjavac {
 
     public int compile() throws ValidationException {
         String line;
-        int scope = 0;
-        boolean isInMethodBody = false, wasPreviousLineReturn = false;
+        ValidatorFactory factory = new ValidatorFactory(symbolTable);
         while ((line = parser.readLine()) != null) {
             if (!RegexUtils.isCommentOrEmpty(line)) {
-                line = line.trim();
-                if (RegexUtils.matches(line, RegexUtils.CLOSING_SCOPE)) {
-                    scope--;
-                    symbolTable.exitScope();
-                    if (wasPreviousLineReturn) {
-                        isInMethodBody = false;
-                    }
-                }
-                else if (RegexUtils.matches(line, RegexUtils.VARIABLE_DECLARATION)) {
-                    if (scope  == 0) { continue; }
-                    System.out.println("variable declaration");
-                    VariableValidator variableValidator = new VariableValidator(symbolTable);
-                    try {
-                        variableValidator.validate(line);
-                    } catch (ValidationException e) {
-                        return INVALID_CODE;
-                    }
-                }
-                else if (RegexUtils.matches(line, RegexUtils.METHOD_DECLARATION)) {
-                    scope++;
-                    if (isInMethodBody) { throw new ValidationException("Cannot declare method inside method"); }
-                    isInMethodBody = true;
-                    if (scope == 1) { continue; }
-                    MethodValidator methodValidator = new MethodValidator(symbolTable);
-                    try {
-                        methodValidator.validate(line);
-                    } catch (ValidationException e) {
-                        System.out.println(e.getMessage());
-                        return INVALID_CODE;
-                    }
-                }
-                else if (RegexUtils.matches(line, RegexUtils.IF_WHILE_BLOCK)) {
-                    System.out.println("if while block");
-                    scope++;
-                    ConditionValidator conditionValidator = new ConditionValidator(symbolTable);
-                    try {
-                        conditionValidator.validate(line);
-                    } catch (ValidationException e) {
-                        System.out.println(e.getMessage());
-                        return INVALID_CODE;
-                    }
-                } else if (RegexUtils.matches(line, RegexUtils.VARIABLE_VALUE_CHANGE)) {
-                    System.out.println("variable value change");
-                    VariableValidator variableValidator = new VariableValidator(symbolTable);
-                    try {
-                        variableValidator.validate(line);
-                    } catch (ValidationException e) {
-                        System.out.println(e.getMessage());
-                        return INVALID_CODE;
-                    }
-                }
-                else if (RegexUtils.matches(line, RegexUtils.METHOD_CALL_ONLY)) {
-                    System.out.println("method call only");
-                    MethodValidator methodValidator = new MethodValidator(symbolTable);
-                    try {
-                        methodValidator.validate(line);
-                    } catch (ValidationException e) {
-                        return INVALID_CODE;
-                    }
-                }
-                else if (RegexUtils.matches(line, RegexUtils.RETURN_STATEMENT)) {
-                    System.out.println("return statement");
-                    MethodValidator methodValidator = new MethodValidator(symbolTable);
-                    try {
-                        methodValidator.validate(line);
-                    } catch (ValidationException e) {
-                        return INVALID_CODE;
-                    }
-                    wasPreviousLineReturn = true;
-                    continue;
-                }
-                else {
-                    throw new ValidationException("Invalid line in global scope: " + line);
-                }
-                wasPreviousLineReturn = false;
+                Validator validator = factory.getValidator(line);
+                if (validator == null) { continue; }
+//                try { validator.validate(line); }
+//                catch (ValidationException e) { return INVALID_CODE; }
+                validator.validate(line);
             }
         }
-        if (scope != 0) {
+        if (symbolTable.getScope() != 0) {
             return INVALID_CODE;
         }
         return LEGAL_CODE;

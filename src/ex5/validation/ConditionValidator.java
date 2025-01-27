@@ -11,7 +11,7 @@ public class ConditionValidator implements Validator {
 
     public void validate(String line) throws ValidationException {
         // if/while regex
-        if (line.matches("^(if|while)\\s*\\((.+)\\)\\s*\\{$")) {
+        if (line.matches("^\\s*(if|while)\\s*\\((.+)\\)\\s*\\{$")) {
             String condition = line.substring(line.indexOf("(") + 1, line.indexOf(")")).trim();
             validateCondition(condition);
         }

@@ -2,6 +2,7 @@ package ex5.validation;
 
 import ex5.exceptions.ValidationException;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -75,6 +76,11 @@ public class SymbolTable {
     public void addMethod(String name, ArrayList<String[]> parameters) {
         methods.put(name, parameters);
         enterScope();
+    }
+
+    public void addMethodParams(String name) {
+        enterScope();
+        ArrayList<String[]> parameters = methods.get(name);
         for (String[] parameter : parameters) {
             boolean isFinal = false;
             if (parameter[0].startsWith("final")) {
