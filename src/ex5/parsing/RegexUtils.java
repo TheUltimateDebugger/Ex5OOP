@@ -31,7 +31,7 @@ public class RegexUtils {
 
     /** Regex for a method declaration. */
     public static final String METHOD_DECLARATION = "void" +
-            "\\s+" + METHOD_NAME + "\\s*\\(.+\\)\\s*\\{";
+            "\\s+" + METHOD_NAME + "\\s*\\(.*\\)\\s*\\{";
 
     public static final String METHOD_CALL = METHOD_NAME + "\\s*\\(.*\\)";
 

@@ -3,7 +3,6 @@ package ex5.validation;
 import ex5.exceptions.ValidationException;
 import ex5.parsing.RegexUtils;
 
-import java.util.random.RandomGenerator;
 
 public class ValidatorFactory {
     private ConditionValidator conditionValidator;
