@@ -13,10 +13,10 @@ public class RegexUtils {
 
     /** Regex for a valid variable name
      * (e.g., starts with a letter, followed by letters, digits, or underscores). */
-    public static final String VARIABLE_NAME = "(?!\\s*_(\\s+|;|,))(?!.*__)[a-zA-Z_][a-zA-Z0-9_]*";
+    public static final String VARIABLE_NAME = "[a-zA-Z_][a-zA-Z0-9_]*";
 
     /** Regex for a valid method name (similar to variable name but may follow stricter conventions). */
-    public static final String METHOD_NAME = "(?!.*__)[a-zA-Z][a-zA-Z0-9_]*";
+    public static final String METHOD_NAME = "[a-zA-Z_][a-zA-Z0-9_]*";
 
     /** Regex for a primitive type declaration (e.g., int, double, boolean, String). */
     public static final String PRIMITIVE_TYPE = "(int|double|boolean|String|char)";
@@ -34,8 +34,8 @@ public class RegexUtils {
             + VARIABLE_NAME + "\\s*)+|)";
 
     /** Regex for a method declaration. */
-    public static final String METHOD_DECLARATION = "(void|" + PRIMITIVE_TYPE + ")" +
-            "\\s+" + METHOD_NAME + "\\s*\\(" + PARAMETERS_DECLARATION + "\\)\\s*\\{";
+    public static final String METHOD_DECLARATION = "void" +
+            "\\s+" + METHOD_NAME + "\\s*\\(.+\\)\\s*\\{";
 
     public static final String METHOD_CALL = METHOD_NAME + "\\s*\\(.*\\)";
 
@@ -55,17 +55,11 @@ public class RegexUtils {
     public static final String VARIABLE_VALUE_CHANGE = "^" + VARIABLE_NAME + "\\s*=\\s*" + VARIABLE_VALUES
             + "\\s*;";
 
-    /** open scope regex */
-    public static final String OPENING_SCOPE = "^.*}\\s*$";
-
     /** Regex for a closing scope. */
     public static final String CLOSING_SCOPE = "^}$";
 
-    public static final String CONDITION = "(" + VARIABLE_VALUES + "|" + VARIABLE_NAME + ")+\\s*"
-            + "((\\|\\||\\&\\&)\\s*(" + VARIABLE_VALUES + "|" + VARIABLE_NAME + ")\\s*)*";
-
     /** Regex for an if or while condition. */
-    public static final String IF_WHILE_BLOCK = "^(if|while)\\s*\\(\\s*" + CONDITION + "\\s*\\)\\s*\\{$";
+    public static final String IF_WHILE_BLOCK = "^(if|while)\\s*\\(.+\\)\\s*\\{$";
 
     /**
      * Compiles and returns a Pattern object for the given regex.
