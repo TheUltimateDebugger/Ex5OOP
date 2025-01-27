@@ -39,7 +39,7 @@ public class RegexUtils {
 
     public static final String METHOD_CALL = METHOD_NAME + "\\s*\\(.*\\)";
 
-    public static final String VARIABLE_VALUES = "(true|false|\".*\"|'.'|\\d*\\.?\\d+|\\d+\\.?\\d*|"
+    public static final String VARIABLE_VALUES = "(true|false|\".*\"|'.'|-?\\d*\\.?\\d+|-?\\d+\\.?\\d*|"
             + METHOD_CALL + "|" + VARIABLE_NAME + ")";
 
     public static final String METHOD_CALL_ONLY = "^" + METHOD_NAME + "\\s*\\(.*\\)\\s*;$";
