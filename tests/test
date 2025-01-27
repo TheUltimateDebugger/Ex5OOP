@@ -5,7 +5,7 @@ void foo() {
 		if (true) {
 			if(false && a) {
 				while(a) {
-					char p;
+					double p = -.1;
 				}
 			}
 

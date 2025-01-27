@@ -4,93 +4,116 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * A utility class that provides predefined regular expressions and helper methods
- * for validating and ex5.parsing s-Java code elements.
+ * A utility class with regex patterns and helper methods for validating and parsing s-Java code.
+ * The class assumes that it deals with lines that has been trimmed.
  */
 public class RegexUtils {
 
-    // Predefined regex patterns for s-Java constructs
-
-    /** Regex for a valid variable name
-     * (e.g., starts with a letter, followed by letters, digits, or underscores). */
+    /** Valid variable name */
     public static final String VARIABLE_NAME = "[a-zA-Z_][a-zA-Z0-9_]*";
 
-    /** Regex expression for illegal variable names */
+    /** Invalid variable name*/
     public static final String ILLEGAL_VARIABLE_NAME = "(.*__+.|_)";
 
-
+    /** Invalid method name */
     public static final String ILLEGAL_METHOD_NAME = "(.*__+.|_.*)";
 
-
-    /** Regex for a valid method name (similar to variable name but may follow stricter conventions). */
+    /** Valid method name */
     public static final String METHOD_NAME = "[a-zA-Z_][a-zA-Z0-9_]*";
 
-    /** Regex for a primitive type declaration (e.g., int, double, boolean, String). */
+    /** Valid primitive types in s-Java: int, double, boolean, String, and char. */
     public static final String PRIMITIVE_TYPE = "(int|double|boolean|String|char)";
 
-    /** Regex for a single-line comment (e.g., // this is a comment). */
+    /** Single-line comment: starts with "//". */
     public static final String SINGLE_LINE_COMMENT = "//.*";
 
-    /** Regex for an empty line (only spaces or tabs). */
+    /** Empty line: contains only spaces or tabs. */
     public static final String EMPTY_LINE = "\\s*";
 
+    /** Line end: optional spaces followed by a semicolon. */
     public static final String END_LINE = "\\s*;$";
 
+    /** Method declaration with no option to add anything */
+    public static final String METHOD_DECLARATION_ONLY = "^void\\s+" + METHOD_NAME + "\\s*\\(.*\\)\\s*\\{$";
 
-    /** Regex for a method declaration. */
-    public static final String METHOD_DECLARATION_ONLY = "^void" +
-            "\\s+" + METHOD_NAME + "\\s*\\(.*\\)\\s*\\{$";
-
+    /** Integer literal with no place to add anything: allows optional negative signs and digits. */
     public static final String INTEGER_ONLY = "^-?\\d+$";
 
+    /** Double literal with no place to add anything: matches floating-point numbers with optional signs. */
     public static final String DOUBLE_ONLY = "(-|\\+)?(\\d*\\.?\\d+|\\d+\\.?\\d*)";
 
+    /** Boolean literal with no place to add anything: matches "true" or "false". */
     public static final String BOOLEAN_ONLY = "^(true|false)$";
 
+    /** String literal with no place to add anything: text enclosed in double quotes. */
     public static final String STRING_ONLY = "^\".*\"$";
 
+    /** Char literal with no place to add anything: single character enclosed in single quotes. */
     public static final String CHAR_ONLY = "^'.'$";
 
+    /** Variable values: valid literals, variable names, or combinations. */
     public static final String VARIABLE_VALUES =
             "(true|false|\".*\"|'.'|(-|\\+)?\\d*\\.?\\d+|(-|\\+)?\\d+\\.?\\d*|" + VARIABLE_NAME + ")";
 
+    /** Method call: matches method name followed by parentheses and optional arguments. */
     public static final String METHOD_CALL_ONLY = "^" + METHOD_NAME + "\\s*\\(.*\\)\\s*;$";
 
+    /** Return statement: matches the keyword 'return' followed by a semicolon. */
     public static final String RETURN_STATEMENT = "^return" + END_LINE;
 
-    /** Regex for a variable declaration. */
-    public static final String VARIABLE_DECLARATION = "^(final\\s*)?" + PRIMITIVE_TYPE + "\\s+"
-            + "(" + VARIABLE_NAME + "(\\s*=\\s*" + VARIABLE_VALUES + ")?\\s*,\\s*)*" + VARIABLE_NAME +
+    /** Variable declaration: optional 'final', a primitive type,
+     * and variable names with optional initialization. */
+    public static final String VARIABLE_DECLARATION = "^(final\\s*)?" + PRIMITIVE_TYPE + "\\s+" +
+            "(" + VARIABLE_NAME + "(\\s*=\\s*" + VARIABLE_VALUES + ")?\\s*,\\s*)*" + VARIABLE_NAME +
             "(\\s*=\\s*" + VARIABLE_VALUES + ")?" + END_LINE;
 
+    /** Variable value assignment: matches variable names followed by an equals sign and value. */
+    public static final String VARIABLE_VALUE_CHANGE = "^" + VARIABLE_NAME +
+            "\\s*=\\s*" + VARIABLE_VALUES + "\\s*;";
 
-    public static final String VARIABLE_VALUE_CHANGE = "^" + VARIABLE_NAME + "\\s*=\\s*" + VARIABLE_VALUES
-            + "\\s*;";
-
-    /** Regex for a closing scope. */
+    /** Closing scope: matches a single closing curly brace. */
     public static final String CLOSING_SCOPE = "^}$";
 
+    /** Condition splitters: logical operators '&&' and '||'. */
     public static final String CONDITION_SPLITTERS = "(&&|\\|\\|)";
 
-    /** Regex for an if or while condition. */
+    /** If/while block: matches 'if' or 'while' followed by parentheses and an opening curly brace. */
     public static final String IF_WHILE_BLOCK = "^(if|while)\\s*\\(.+\\)\\s*\\{$";
 
+    /** The keyword for an Integer */
+    public static final String INTEGER = "int";
+
+    /** The keyword for a Double */
+    public static final String DOUBLE = "double";
+
+    /** The keyword for a Boolean */
+    public static final String BOOLEAN = "boolean";
+
+    /** The keyword for a String */
+    public static final String STRING = "string";
+
+    /** The keyword for a char */
+    public static final String CHAR = "char";
+
+    /** The keyword for a final */
+    public static final String FINAL = "final";
+
     /**
-     * Compiles and returns a Pattern object for the given regex.
+     * Compiles a regex into a Pattern.
      *
-     * @param regex The regular expression to compile.
-     * @return A Pattern object.
+     * @param regex Regex to compile.
+     * @return Compiled Pattern object.
      */
     public static Pattern compilePattern(String regex) {
         return Pattern.compile(regex);
     }
 
     /**
-     * Checks if a given string matches the provided regex pattern.
+     * Checks if a string matches a regex.
      *
-     * @param input The string to test.
-     * @param regex The regex pattern to match against.
-     * @return True if the string matches the pattern, false otherwise.
+     * @param input Input string.
+     * @param regex Regex pattern.
+     * @return True if matches, false otherwise.
      */
     public static boolean matches(String input, String regex) {
         Pattern pattern = compilePattern(regex);
@@ -99,72 +122,40 @@ public class RegexUtils {
     }
 
     /**
-     * Extracts the first match of the given regex in the input string.
+     * Checks if a line is a comment or empty.
      *
-     * @param input The string to search.
-     * @param regex The regex pattern to search for.
-     * @return The first match if found, or null if no match exists.
-     */
-    public static String extractFirstMatch(String input, String regex) {
-        Pattern pattern = compilePattern(regex);
-        Matcher matcher = pattern.matcher(input);
-        if (matcher.find()) {
-            return matcher.group();
-        }
-        return null;
-    }
-
-    /**
-     * Extracts all matches of the given regex in the input string.
-     *
-     * @param input The string to search.
-     * @param regex The regex pattern to search for.
-     * @return An array of all matches, or an empty array if no matches are found.
-     */
-    public static String[] extractAllMatches(String input, String regex) {
-        Pattern pattern = compilePattern(regex);
-        Matcher matcher = pattern.matcher(input);
-        StringBuilder matches = new StringBuilder();
-
-        while (matcher.find()) {
-            matches.append(matcher.group()).append("\n");
-        }
-
-        return matches.toString().split("\n");
-    }
-
-    /**
-     * Checks if a line is a comment or empty line.
-     *
-     * @param line The line to check.
-     * @return True if the line is a comment or empty, false otherwise.
+     * @param line Line to check.
+     * @return True if comment or empty, false otherwise.
      */
     public static boolean isCommentOrEmpty(String line) {
         return matches(line, SINGLE_LINE_COMMENT) || matches(line, EMPTY_LINE);
     }
 
+    /**
+     * Determines the type of a literal argument.
+     *
+     * @param argument Input argument.
+     * @return Type of the literal (int, double, boolean, String, char), or empty if invalid.
+     */
     public static String getLiteralType(String argument) {
-        // match literal to type regex
-        if (argument.matches("^-?\\d+$")) {
-            return "int";
-        } else if (argument.matches("^-?\\d+\\.\\d+$")) {
-            return "double";
-        } else if (argument.equals("true") || argument.equals("false")) {
-            return "boolean";
-        } else if (argument.matches("^\".*\"$")) {
-            return "String";
-        } else if (argument.matches("^'.'$")) {
-            return "char";
-        }
+        if (argument.matches(INTEGER_ONLY)) return INTEGER;
+        if (argument.matches(DOUBLE_ONLY)) return DOUBLE;
+        if (argument.matches(BOOLEAN_ONLY)) return BOOLEAN;
+        if (argument.matches(STRING_ONLY)) return STRING;
+        if (argument.matches(CHAR_ONLY)) return CHAR;
         return "";
     }
 
+    /**
+     * Validates if a type is a supported s-Java type.
+     *
+     * @param type Type to validate.
+     * @return True if valid, false otherwise.
+     */
     public static boolean isValidType(String type) {
-        if (type.contains("final")) {
-            type = type.replace("final", "");
-        }
+        if (type.contains(FINAL)) type = type.replace(FINAL, "");
         type = type.trim();
-        return type.equals("int") || type.equals("double") || type.equals("boolean") ||
-                type.equals("char") || type.equals("String");
+        return type.equals(INTEGER) || type.equals(DOUBLE) || type.equals(BOOLEAN) ||
+                type.equals(CHAR) || type.equals(STRING);
     }
 }
