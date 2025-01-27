@@ -47,7 +47,8 @@ public class MethodValidator implements Validator {
      * @throws ValidationException If the declaration contains errors.
      */
     public void validateMethodDeclaration(String line) throws ValidationException {
-        String[] nameAndParams = line.substring(4, line.indexOf('(')).trim().split(RegexUtils.SPACES);
+        final int VOID_LENGTH = 4;
+        String[] nameAndParams = line.substring(VOID_LENGTH, line.indexOf('(')).trim().split(RegexUtils.SPACES);
         String methodName = nameAndParams[nameAndParams.length - 1];
         symbolTable.addMethodParams(methodName);
     }
@@ -62,8 +63,9 @@ public class MethodValidator implements Validator {
         final String INVALID_METHOD = "Method '<>' cannot start with '_' or contain '__'";
         final String ALREADY_DECLARED = "Method '<>' is already declared";
         final String PLACEHOLDER = "<>";
+        final int VOID_LENGTH = 4;
 
-        String[] nameAndParams = line.substring(4, line.indexOf('(')).trim().split(RegexUtils.SPACES);
+        String[] nameAndParams = line.substring(VOID_LENGTH, line.indexOf('(')).trim().split(RegexUtils.SPACES);
         String methodName = nameAndParams[nameAndParams.length - 1];
 
         if (methodName.matches(RegexUtils.ILLEGAL_METHOD_NAME)) {

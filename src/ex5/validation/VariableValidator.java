@@ -12,9 +12,9 @@ public class VariableValidator implements Validator {
     public void validate(String line) throws ValidationException {
         // variable declaration regex (including initialization)
         if (line.matches(RegexUtils.VARIABLE_DECLARATION)) {
-            boolean isFinal = line.startsWith("final");
-            if (isFinal) { line = line.substring("final".length()).trim(); }
-            String[] typeAndNames = line.split("\\s+", 2);
+            boolean isFinal = line.startsWith(RegexUtils.FINAL);
+            if (isFinal) { line = line.substring(RegexUtils.FINAL.length()).trim(); }
+            String[] typeAndNames = line.split(RegexUtils.SPACES, 2);
             String[] names = typeAndNames[1].split(",");
             names[names.length - 1] = names[names.length - 1].replace(";", "");
 
@@ -109,15 +109,15 @@ public class VariableValidator implements Validator {
         value = value.trim();
         // regex matches per each type
         switch (variableType) {
-            case "int":
+            case RegexUtils.INTEGER:
                 return value.matches(RegexUtils.INTEGER_ONLY);
-            case "double":
+            case RegexUtils.DOUBLE:
                 return value.matches(RegexUtils.DOUBLE_ONLY);
-            case "boolean":
+            case RegexUtils.BOOLEAN:
                 return value.matches(RegexUtils.BOOLEAN_ONLY) || value.matches(RegexUtils.DOUBLE_ONLY);
-            case "char":
+            case RegexUtils.CHAR:
                 return value.matches(RegexUtils.CHAR_ONLY);
-            case "String":
+            case RegexUtils.STRING:
                 return value.matches(RegexUtils.STRING_ONLY);
             default:
                 return false;
@@ -125,8 +125,8 @@ public class VariableValidator implements Validator {
     }
 
     private boolean isValidType(String type) {
-        // TODO: add list of types and make this more dynamic
-        return type.equals("int") || type.equals("double") || type.equals("boolean") ||
-                type.equals("char") || type.equals("String");
+        return type.equals(RegexUtils.INTEGER) || type.equals(RegexUtils.DOUBLE) ||
+                type.equals(RegexUtils.BOOLEAN) || type.equals(RegexUtils.CHAR) ||
+                type.equals(RegexUtils.STRING);
     }
 }
