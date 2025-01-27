@@ -49,6 +49,10 @@ public class VariableValidator implements Validator {
 
     private void validateDeclaration(String name, String type,
                                     boolean isFinal, boolean isInitialized) throws ValidationException {
+        if (name.matches("(.*__.*|_)")) {
+            throw new ValidationException("Variable '" + name +
+                    "' cannot have '__' in it or be only '_'");
+        }
         if (symbolTable.variableExists(symbolTable.getScope(), name)) {
             throw new ValidationException("Variable '" + name +
                     "' already declared in the current scope.");
