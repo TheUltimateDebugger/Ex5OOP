@@ -2,7 +2,7 @@ package ex5.main;
 
 import ex5.exceptions.FileException;
 import ex5.exceptions.ValidationException;
-import ex5.parsing.Parser;
+import ex5.parsing.FileProcessor;
 import ex5.parsing.RegexUtils;
 import ex5.validation.*;
 
@@ -12,12 +12,12 @@ public class Sjavac {
     public static final int LEGAL_CODE = 0;
     public static final int INVALID_CODE = 1;
     public static final int IO_ERROR = 2;
-    private final Parser parser;
+    private final FileProcessor fileProcessor;
     private final SymbolTable symbolTable;
 
     public Sjavac(String fileName) {
         try {
-            this.parser = new Parser(fileName);
+            this.fileProcessor = new FileProcessor(fileName);
         } catch (FileException e) {
             throw new RuntimeException(e);
         }
@@ -28,7 +28,7 @@ public class Sjavac {
         String line;
         ValidatorFactory factory = new ValidatorFactory(symbolTable);
 
-        while ((line = parser.readLine()) != null) {
+        while ((line = fileProcessor.readLine()) != null) {
             line = line.trim();
             if (RegexUtils.isCommentOrEmpty(line)) { continue; }
             Validator validator = factory.getValidatorForSweep(line);
@@ -44,7 +44,7 @@ public class Sjavac {
     public int compile() throws ValidationException {
         String line;
         ValidatorFactory factory = new ValidatorFactory(symbolTable);
-        while ((line = parser.readLine()) != null) {
+        while ((line = fileProcessor.readLine()) != null) {
             line = line.trim();
             if (!RegexUtils.isCommentOrEmpty(line)) {
                 Validator validator = factory.getValidator(line);
@@ -63,7 +63,7 @@ public class Sjavac {
         Sjavac compiler = new Sjavac(fileName);
         compiler.initialSweep();
         System.out.println("first pass completed");
-        compiler.parser.reset();
+        compiler.fileProcessor.reset();
         System.out.println(compiler.compile());
     }
 }

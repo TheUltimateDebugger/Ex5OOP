@@ -2,18 +2,17 @@ package ex5.parsing;
 
 import ex5.exceptions.FileException;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Scanner;
 
-public class Parser {
+public class FileProcessor {
     private InputStream inputStream;
     private Scanner scanner;
     private String filename;
 
-    public Parser(String fileName) throws FileException {
+    public FileProcessor(String fileName) throws FileException {
         this.filename = fileName;
         try {
             inputStream = new FileInputStream(fileName);
