@@ -1,0 +1,40 @@
+tomer_zilb, idomi
+326063047, 215334251
+
+We implemented the project largely using a factory design for Validators, which validate lines that
+belong to a certain "bucket" of lines (e.g. conditions, methods, or variables). We then had a main
+function run both an initial sweep to fill up the symbol table class and a second sweep to fully
+look through the code, which both utilized the factory design.
+We will now describe the two main regular expressions that we've used in the code:
+1. The first regular expression represents a family of "bucket-sorting" expressions, which means
+that instead of looking for a specific format, it looks for bold and simple features that in
+general say which bucket a line belongs to. One example of this, the following expression:
+
+^(final\s*)?(int|double|boolean|String|char)\s+([a-zA-Z_][a-zA-Z0-9_]*(\s*=\s*(true|false|".*"|'.'|(
+-|\+)?\d*\.?\d+|(-|\+)?\d+\.?\d*|[a-zA-Z_][a-zA-Z0-9_]*))?\s*,\s*)*[a-zA-Z_][a-zA-Z0-9_]*(\s*=\s*(
+true|false|".*"|'.'|(-|\+)?\d*\.?\d+|(-|\+)?\d+\.?\d*|[a-zA-Z_][a-zA-Z0-9_]*))?\s*;$
+
+We can take this apart and notice that in the code, it is defined like this:
+VARIABLE_DECLARATION = "^(final\\s*)?" + PRIMITIVE_TYPE + "\\s+"
++ "(" + VARIABLE_NAME + "(\\s*=\\s*" + VARIABLE_VALUES + ")?\\s*,\\s*)*" + VARIABLE_NAME +
+"(\\s*=\\s*" + VARIABLE_VALUES + ")?" + END_LINE;
+
+So essentially, what we have here is a long string that defines what we might see in a
+"variable bucket" line:
+a. We might see the "final" keyword.
+b. We will definitely see a primitive type.
+c. We will definitely see a variable name.
+d. We might see assignments after c.
+e. We might see a comma after c/d, after which either c or c and d may appear again.
+f. We will definitely see a semicolon.
+g. We also might see whitespaces between each of these keywords.
+
+2. The second regular expression represents a family of more precise regular expressions. These
+regular expressions take lines that were already sorted into buckets and help analyzed their tokens
+in a manner that verifies that they're 100% legal. For example, keeping with the same variable
+bucket example from the previous regular expression:
+
+(.*__+.|_)
+
+This simple regular expression checks whether or not a variable name is legal. The RegexUtils class
+contains more examples like this - it helps us check in a more precise fashion.
