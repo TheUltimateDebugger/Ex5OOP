@@ -135,6 +135,10 @@ public class MethodValidator implements Validator {
     }
 
     private boolean isValidType(String type) {
+        if (type.contains("final")) {
+            type = type.replace("final", "");
+        }
+        type = type.trim();
         return type.equals("int") || type.equals("double") || type.equals("boolean") ||
                 type.equals("char") || type.equals("String");
     }

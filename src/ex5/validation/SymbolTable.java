@@ -76,7 +76,13 @@ public class SymbolTable {
         methods.put(name, parameters);
         enterScope();
         for (String[] parameter : parameters) {
-
+            boolean isFinal = false;
+            if (parameter[0].startsWith("final")) {
+                isFinal = true;
+                parameter[0] = parameter[0].substring("final".length()).trim();
+            }
+            scopes.getLast().put(parameter[1], new Variable(parameter[1],
+                    parameter[0], true, isFinal));
         }
     }
 
