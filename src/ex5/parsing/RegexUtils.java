@@ -29,10 +29,6 @@ public class RegexUtils {
 
     public static final String END_LINE = "\\s*;$";
 
-    public static final String PARAMETERS_DECLARATION = "(((final\\s*)?" + PRIMITIVE_TYPE + "\\s+"
-            + VARIABLE_NAME + "\\s*,\\s*)*" + "((final\\s*)?" + PRIMITIVE_TYPE + "\\s+"
-            + VARIABLE_NAME + "\\s*)+|)";
-
     /** Regex for a method declaration. */
     public static final String METHOD_DECLARATION = "void" +
             "\\s+" + METHOD_NAME + "\\s*\\(.+\\)\\s*\\{";
@@ -44,7 +40,7 @@ public class RegexUtils {
 
     public static final String METHOD_CALL_ONLY = "^" + METHOD_NAME + "\\s*\\(.*\\)\\s*;$";
 
-    public static final String RETURN_STATEMENT = "^return(\\s+" + VARIABLE_VALUES + ")?" + END_LINE;
+    public static final String RETURN_STATEMENT = "^return" + END_LINE;
 
     /** Regex for a variable declaration. */
     public static final String VARIABLE_DECLARATION = "^(final\\s*)?" + PRIMITIVE_TYPE + "\\s+"
