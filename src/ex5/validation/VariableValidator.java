@@ -81,7 +81,7 @@ public class VariableValidator implements Validator {
         String variableType = symbolTable.getVariableType(scope, name);
         if (!isTypeCompatible(variableType, value)) {
             throw new ValidationException("Type mismatch: Cannot assign value '" + value +
-                    "' to variable '" + name + "' of type '" + variableType + "', or variable" +
+                    "' to variable '" + name + "' of type '" + variableType + "', or variable " +
                     "is uninitialized.");
         }
     }
