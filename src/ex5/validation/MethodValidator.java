@@ -16,7 +16,7 @@ public class MethodValidator implements Validator {
             validateMethodDeclaration(line);
         }
         // method call regex
-        else if (line.matches("^\\s*[a-zA-Z_][\\w]*\\s*\\(.*\\)\\s*;$")) {
+        else if (line.matches("^[a-zA-Z_][\\w]*\\s*\\(.*\\)\\s*;$")) {
             validateMethodCall(line);
         }
         // return regex
@@ -38,6 +38,10 @@ public class MethodValidator implements Validator {
     public void validateMethodDeclarationForSweep(String line) throws ValidationException {
         String[] nameAndParams = line.substring(4, line.indexOf('(')).trim().split("\\s+");
         String methodName = nameAndParams[nameAndParams.length - 1];
+        if (methodName.matches("(.*__*.|_)")) {
+            throw new ValidationException("Method '" + methodName
+                    + "' cannot start with '_' or contain '__'");
+        }
         if (symbolTable.methodExists(methodName)) {
             throw new ValidationException("Method '" + methodName + "' is already declared.");
         }
