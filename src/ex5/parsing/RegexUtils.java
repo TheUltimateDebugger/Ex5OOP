@@ -44,6 +44,8 @@ public class RegexUtils {
 
     public static final String METHOD_CALL_ONLY = "^" + METHOD_NAME + "\\s*\\(.*\\)\\s*;$";
 
+    public static final String RETURN_STATEMENT = "^return(\\s+" + VARIABLE_VALUES + ")?" + END_LINE;
+
     /** Regex for a variable declaration. */
     public static final String VARIABLE_DECLARATION = "^(final\\s*)?" + PRIMITIVE_TYPE + "\\s+"
             + "(" + VARIABLE_NAME + "(\\s*=\\s*" + VARIABLE_VALUES + ")?\\s*,\\s*)*" + VARIABLE_NAME +
