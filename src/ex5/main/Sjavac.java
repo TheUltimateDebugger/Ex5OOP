@@ -27,46 +27,19 @@ public class Sjavac {
 
     public void initialSweep() throws ValidationException {
         String line;
-        int scope = 0; // Global scope
-        boolean insideMethodBody = false; // Track if we're inside a method body
-
-        VariableValidator variableValidator = new VariableValidator(symbolTable);
-        MethodValidator methodValidator = new MethodValidator(symbolTable);
+        ValidatorFactory factory = new ValidatorFactory(symbolTable);
 
         while ((line = parser.readLine()) != null) {
             line = line.trim();
             if (RegexUtils.isCommentOrEmpty(line)) { continue; }
-            if (RegexUtils.matches(line, RegexUtils.IF_WHILE_BLOCK)) {
-                scope++;
-                continue;
-            }
-            if (RegexUtils.matches(line, RegexUtils.CLOSING_SCOPE)) {
-                scope--;
-                if (scope == 0) {
-                    insideMethodBody = false;
-                    symbolTable.exitScope();
-                }
-                continue;
-            }
-            if (insideMethodBody) { continue; }
-            if (RegexUtils.matches(line, RegexUtils.VARIABLE_DECLARATION)) {
-                variableValidator.validate(line);
-            } else if (RegexUtils.matches(line, RegexUtils.METHOD_DECLARATION)) {
-                scope++;
-                methodValidator.validateMethodDeclarationForSweep(line);
-                insideMethodBody = true;
-            } else if (RegexUtils.matches(line, RegexUtils.VARIABLE_VALUE_CHANGE)) {
-                variableValidator.validate(line);
-            } else {
-                throw new ValidationException("Invalid line in global scope: " + line);
-            }
-
+            Validator validator = factory.getValidatorForSweep(line);
+            if (validator == null) { continue; }
+            validator.validate(line);
         }
 
-        if (scope != 0) {
+        if (symbolTable.getScope() != 0) {
             System.err.println("Unmatched opening/closing braces.");
         }
-
     }
 
     public int compile() throws ValidationException {
@@ -76,6 +49,7 @@ public class Sjavac {
             if (!RegexUtils.isCommentOrEmpty(line)) {
                 Validator validator = factory.getValidator(line);
                 if (validator == null) { continue; }
+                // TODO: uncomment
 //                try { validator.validate(line); }
 //                catch (ValidationException e) { return INVALID_CODE; }
                 validator.validate(line);

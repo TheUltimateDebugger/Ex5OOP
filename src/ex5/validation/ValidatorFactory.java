@@ -54,4 +54,30 @@ public class ValidatorFactory {
 
         return returnValue;
     }
+
+    public Validator getValidatorForSweep(String line) throws ValidationException {
+        if (RegexUtils.matches(line, RegexUtils.IF_WHILE_BLOCK)) {
+            symbolTable.enterScope();
+            return null;
+        }
+        if (RegexUtils.matches(line, RegexUtils.CLOSING_SCOPE)) {
+            symbolTable.exitScope();
+            if (symbolTable.getScope() == 0) {
+                isInMethodBody = false;
+            }
+            return null;
+        }
+        if (isInMethodBody) { return null; }
+        if (RegexUtils.matches(line, RegexUtils.VARIABLE_DECLARATION)) {
+            return variableValidator;
+        } else if (RegexUtils.matches(line, RegexUtils.METHOD_DECLARATION)) {
+            methodValidator.validateMethodDeclarationForSweep(line);
+            isInMethodBody = true;
+            return null;
+        } else if (RegexUtils.matches(line, RegexUtils.VARIABLE_VALUE_CHANGE)) {
+            return variableValidator;
+        } else {
+            throw new ValidationException("Invalid line in global scope: " + line);
+        }
+    }
 }

@@ -12,11 +12,11 @@ public class MethodValidator implements Validator {
     }
     public void validate(String line) throws ValidationException {
         // declaration regex
-        if (line.matches("^void\\s+[a-zA-Z_][\\w]*\\s*\\(.*\\)\\s*\\{$")) {
+        if (line.matches("^\\s*void\\s+[a-zA-Z_][\\w]*\\s*\\(.*\\)\\s*\\{$")) {
             validateMethodDeclaration(line);
         }
         // method call regex
-        else if (line.matches("^[a-zA-Z_][\\w]*\\s*\\(.*\\)\\s*;$")) {
+        else if (line.matches("^\\s*[a-zA-Z_][\\w]*\\s*\\(.*\\)\\s*;$")) {
             validateMethodCall(line);
         }
         // return regex
