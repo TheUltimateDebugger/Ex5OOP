@@ -1,4 +1,4 @@
-void test(int a) {
+    void     test(  int a ) {
 a = 6;
 }
 int a;
