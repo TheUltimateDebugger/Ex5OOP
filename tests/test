@@ -1,16 +1,1 @@
-boolean a = true;
-
-void foo() {
-	while(true) {
-		if (true) {
-			if(false && a) {
-				while(a) {
-					double p = -.1;
-				}
-			}
-
-		}
-
-	}
-	return;
-}
+int a = 5.2;

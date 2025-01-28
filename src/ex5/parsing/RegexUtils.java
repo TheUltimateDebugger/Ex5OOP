@@ -94,7 +94,7 @@ public class RegexUtils {
     public static final String BOOLEAN = "boolean";
 
     /** The keyword for a String */
-    public static final String STRING = "string";
+    public static final String STRING = "String";
 
     /** The keyword for a char */
     public static final String CHAR = "char";

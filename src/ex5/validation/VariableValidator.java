@@ -40,7 +40,7 @@ public class VariableValidator implements Validator {
     public void validate(String line) throws ValidationException {
         // Constants used for splitting and error messages
         final int SPLITTING_LIMIT = 2;
-        final int VALUE_INDEX = 1, NAME_INDEX = 0;
+        final int VALUE_INDEX = 0, NAME_INDEX = 1;
         final String VAR_NOT_INITIALIZED = "Cannot assign value from null variable '<>'.",
                 FINAL_VAR_NULL = "Final variable '<>' cannot be null",
                 INVALID_ASSIGNMENT_LINE = "Invalid assignment syntax: " + line,
@@ -60,8 +60,8 @@ public class VariableValidator implements Validator {
             for (String name : names) {
                 String value = null;
                 if (name.contains(DEFINING_VALUE_CHAR)) {
-                    value = name.split(DEFINING_VALUE_CHAR, SPLITTING_LIMIT)[VALUE_INDEX].trim();
-                    name = name.split(DEFINING_VALUE_CHAR, SPLITTING_LIMIT)[NAME_INDEX].trim();
+                    value = name.split(DEFINING_VALUE_CHAR, SPLITTING_LIMIT)[NAME_INDEX].trim();
+                    name = name.split(DEFINING_VALUE_CHAR, SPLITTING_LIMIT)[VALUE_INDEX].trim();
                 }
                 if (value != null) {
                     int valueScope = symbolTable.findVariableScope(value);
