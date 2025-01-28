@@ -6,6 +6,7 @@ import ex5.parsing.RegexUtils;
 /**
  * Factory class for creating and managing different types of validators.
  * Handles validation for various lines of code, including conditions, methods, and variables.
+ * @author Tomer Zilberman
  */
 public class ValidatorFactory {
 
