@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 /**
  * The FileProcessor class provides functionality to process and read lines from a file.
- * It uses a Scanner for reading the file line by line and allows resetting the file reading process.
+ * It uses a Scanner for reading the file line by line and allows resetting the file reading process
  * @author Tomer Zilberman
  */
 public class FileProcessor {

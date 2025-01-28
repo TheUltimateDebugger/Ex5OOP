@@ -60,9 +60,10 @@ public class VariableValidator implements Validator {
                 }
                 if (value != null) {
                     int valueScope = symbolTable.findVariableScope(value);
-                    if ((valueScope >= 0 && !symbolTable.isVariableInitialized(valueScope, value)) ||
+                    if ((valueScope >= 0 && !symbolTable.isVariableInitialized(valueScope, value))||
                             (value.equals(name) && valueScope == -1)) {
-                        throw new ValidationException(VAR_NOT_INITIALIZED.replace(PLACEHOLDER, name));
+                        throw new ValidationException(
+                                VAR_NOT_INITIALIZED.replace(PLACEHOLDER, name));
                     }
                 }
                 validateDeclaration(name, typeAndNames[0], isFinal, value != null);
@@ -102,8 +103,10 @@ public class VariableValidator implements Validator {
      */
     private void validateDeclaration(String name, String type, boolean isFinal, boolean isInitialized)
             throws ValidationException {
-        final String ILLEGAL_VAR_NAME = "Variable '" + name + "' cannot have '__' in it or be only '_'";
-        final String ALREADY_DECLARED = "Variable '" + name + "' already declared in the current scope.";
+        final String ILLEGAL_VAR_NAME = "Variable '" + name +
+                "' cannot have '__' in it or be only '_'";
+        final String ALREADY_DECLARED = "Variable '" + name +
+                "' already declared in the current scope.";
         final String INVALID_TYPE = "Invalid type '" + type + "' for variable '" + name + "'.";
 
         if (name.matches(RegexUtils.ILLEGAL_VARIABLE_NAME)) {
@@ -133,7 +136,8 @@ public class VariableValidator implements Validator {
      */
     private void validateAssignment(String name, String value, boolean isDeclaration)
             throws ValidationException {
-        final String VAR_NOT_EXIST = "Variable '" + name + "' does not exist in the current or parent scopes.";
+        final String VAR_NOT_EXIST = "Variable '" + name +
+                "' does not exist in the current or parent scopes.";
         final String FINAL_VAR_ASSIGNMENT = "Cannot assign to final variable '" + name + "'.";
         final String MISMATCH_TYPES = "Type mismatch: Cannot assign value '" + value +
                 "' to variable '" + name + "' of type '<>' or variable is uninitialized.";
@@ -174,7 +178,8 @@ public class VariableValidator implements Validator {
             case RegexUtils.DOUBLE:
                 return value.matches(RegexUtils.DOUBLE_ONLY);
             case RegexUtils.BOOLEAN:
-                return value.matches(RegexUtils.BOOLEAN_ONLY) || value.matches(RegexUtils.DOUBLE_ONLY);
+                return value.matches(RegexUtils.BOOLEAN_ONLY) ||
+                        value.matches(RegexUtils.DOUBLE_ONLY);
             case RegexUtils.CHAR:
                 return value.matches(RegexUtils.CHAR_ONLY);
             case RegexUtils.STRING:

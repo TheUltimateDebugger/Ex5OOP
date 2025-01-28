@@ -36,7 +36,8 @@ public class ConditionValidator implements Validator {
     }
 
     /**
-     * Validates the condition inside an if/while block, ensuring all variables and literals are valid.
+     * Validates the condition inside an if/while block,
+     * ensuring all variables and literals are valid.
      *
      * @param overallCondition The overall condition string.
      * @throws ValidationException If any variable or literal in the condition is invalid.
@@ -60,21 +61,25 @@ public class ConditionValidator implements Validator {
                 // Check if variable exists in the symbol table
                 int lookupScope = symbolTable.findVariableScope(condition);
                 if (lookupScope == EXCEPTION_VALUE) {
-                    throw new ValidationException(VARIABLE_UNDEFINED.replace(PLACEHOLDER, condition));
+                    throw new ValidationException(
+                            VARIABLE_UNDEFINED.replace(PLACEHOLDER,condition));
                 }
 
                 // Check if variable is initialized
                 if (!symbolTable.isVariableInitialized(lookupScope, condition)) {
-                    throw new ValidationException(VARIABLE_UNINITIALIZED.replace(PLACEHOLDER, condition));
+                    throw new ValidationException(
+                            VARIABLE_UNINITIALIZED.replace(PLACEHOLDER, condition));
                 }
 
                 // Check if variable type is valid (boolean, double, or int)
                 String type = symbolTable.getVariableType(lookupScope, condition);
                 if (!(type.equals(RegexUtils.BOOLEAN) || type.equals(RegexUtils.DOUBLE) ||
                         type.equals(RegexUtils.INTEGER))) {
-                    throw new ValidationException(VARIABLE_INVALID_TYPE.replace(PLACEHOLDER, condition));
+                    throw new ValidationException(
+                            VARIABLE_INVALID_TYPE.replace(PLACEHOLDER, condition));
                 }
-            } else if (!(literalType.equals(RegexUtils.BOOLEAN) || literalType.equals(RegexUtils.INTEGER) ||
+            } else if (!(literalType.equals(RegexUtils.BOOLEAN) ||
+                    literalType.equals(RegexUtils.INTEGER) ||
                     literalType.equals(RegexUtils.DOUBLE))) {
                 // Check if the literal type is valid
                 throw new ValidationException(LITERAL_UNDEFINED.replace(PLACEHOLDER, condition));

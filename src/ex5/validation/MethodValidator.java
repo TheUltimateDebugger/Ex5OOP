@@ -95,7 +95,7 @@ public class MethodValidator implements Validator {
         final String METHOD_NOT_EXISTS = "Method '<>' does not exist";
         final String METHOD_ARGS = "Method '<1>' expects '<2>' arguments but got '<3>'";
         final String ARGUMENT_INCOMPATIBLE =
-                "Argument '<1>' of type '<2>' is not compatible with argument '<3>' in method '<4>'";
+            "Argument '<1>' of type '<2>' is not compatible with argument '<3>' in method '<4>'";
         final String PLACEHOLDER_1 = "<1>";
         final String PLACEHOLDER_2 = "<2>";
         final String PLACEHOLDER_3 = "<3>";
@@ -160,7 +160,8 @@ public class MethodValidator implements Validator {
             String[] parameterParts = parameter.trim().split(RegexUtils.SPACES, SPLIT_LIMIT);
             if (parameterParts.length == SPLIT_LIMIT) {
                 if (!parameterParts[0].equals(RegexUtils.FINAL)) {
-                    throw new ValidationException(PARAMETER_INVALID.replace(PLACEHOLDER, parameter));
+                    throw new ValidationException(
+                            PARAMETER_INVALID.replace(PLACEHOLDER, parameter));
                 }
                 parameterParts = new String[]{parameterParts[0] + SPACE +
                         parameterParts[1], parameterParts[2]};
@@ -169,7 +170,8 @@ public class MethodValidator implements Validator {
                 throw new ValidationException(INVALID_PARAM_SYNTAX.replace(PLACEHOLDER, parameter));
             }
             if (!RegexUtils.isValidType(parameterParts[0])) {
-                throw new ValidationException(INVALID_PARAM_TYPE.replace(PLACEHOLDER, parameterParts[0]));
+                throw new ValidationException(
+                        INVALID_PARAM_TYPE.replace(PLACEHOLDER, parameterParts[0]));
             }
             for (String[] existingParam : parametersList) {
                 if (existingParam[1].equals(parameterParts[1])) {

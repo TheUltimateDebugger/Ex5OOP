@@ -38,12 +38,14 @@ public class RegexUtils {
     public static final String END_LINE = "\\s*;$";
 
     /** Method declaration with no option to add anything */
-    public static final String METHOD_DECLARATION_ONLY = "^void\\s+" + METHOD_NAME + "\\s*\\(.*\\)\\s*\\{$";
+    public static final String METHOD_DECLARATION_ONLY = "^void\\s+" + METHOD_NAME +
+            "\\s*\\(.*\\)\\s*\\{$";
 
-    /** Integer literal with no place to add anything: allows optional negative signs and digits. */
+    /** Integer literal with no place to add anything: allows optional negative signs and digits.*/
     public static final String INTEGER_ONLY = "^-?\\d+$";
 
-    /** Double literal with no place to add anything: matches floating-point numbers with optional signs. */
+    /** Double literal with no place to add anything: matches floating-point
+     * numbers with optional signs. */
     public static final String DOUBLE_ONLY = "(-|\\+)?(\\d*\\.?\\d+|\\d+\\.?\\d*)";
 
     /** Boolean literal with no place to add anything: matches "true" or "false". */
@@ -57,7 +59,8 @@ public class RegexUtils {
 
     /** Variable values: valid literals, variable names, or combinations. */
     public static final String VARIABLE_VALUES =
-            "(true|false|\".*\"|'.'|(-|\\+)?\\d*\\.?\\d+|(-|\\+)?\\d+\\.?\\d*|" + VARIABLE_NAME + ")";
+            "(true|false|\".*\"|'.'|(-|\\+)?\\d*\\.?\\d+|(-|\\+)?\\d+\\.?\\d*|" +
+                    VARIABLE_NAME + ")";
 
     /** Method call: matches method name followed by parentheses and optional arguments. */
     public static final String METHOD_CALL_ONLY = "^" + METHOD_NAME + "\\s*\\(.*\\)\\s*;$";
@@ -81,7 +84,8 @@ public class RegexUtils {
     /** Condition splitters: logical operators '&&' and '||'. */
     public static final String CONDITION_SPLITTERS = "(&&|\\|\\|)";
 
-    /** If/while block: matches 'if' or 'while' followed by parentheses and an opening curly brace. */
+    /** If/while block: matches 'if' or 'while' followed by parentheses
+     * and an opening curly brace. */
     public static final String IF_WHILE_BLOCK = "^(if|while)\\s*\\(.+\\)\\s*\\{$";
 
     /** The keyword for an Integer */

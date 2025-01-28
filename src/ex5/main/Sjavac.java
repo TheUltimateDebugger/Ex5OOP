@@ -9,14 +9,17 @@ import ex5.validation.*;
 import java.io.FileNotFoundException;
 
 /**
- * Main class for compiling a custom language. Reads a file, performs syntax and semantic validation.
+ * Main class for compiling a custom language. Reads a file, performs syntax and semantic validation
  * @author Tomer Zilberman
  */
 public class Sjavac {
+    /** Legal return code */
     public static final int LEGAL_CODE = 0;
+    /** Illegal return code */
     public static final int INVALID_CODE = 1;
+    /** IO error return code */
     public static final int IO_ERROR = 2;
-    public final FileProcessor fileProcessor;
+    private final FileProcessor fileProcessor;
     private final SymbolTable symbolTable;
     private static final String UNMATCHED_BRACES_ERROR = "Unmatched opening/closing braces.";
 
@@ -24,13 +27,10 @@ public class Sjavac {
      * Initializes the compiler with the given file.
      *
      * @param fileName The name of the file to compile.
+     * @throws FileException in case of IO error
      */
-    public Sjavac(String fileName) {
-        try {
-            this.fileProcessor = new FileProcessor(fileName);
-        } catch (FileException e) {
-            throw new RuntimeException(e);
-        }
+    public Sjavac(String fileName) throws FileException {
+        this.fileProcessor = new FileProcessor(fileName);
         symbolTable = new SymbolTable();
     }
 
@@ -50,6 +50,7 @@ public class Sjavac {
                 Validator validator = factory.getValidatorForSweep(line);
                 if (validator != null) validator.validate(line);
             } catch (ValidationException e) {
+                System.err.println(e.getMessage());
                 return INVALID_CODE;
             }
         }
@@ -77,6 +78,7 @@ public class Sjavac {
                     Validator validator = factory.getValidator(line);
                     if (validator != null) validator.validate(line);
                 } catch (ValidationException e) {
+                    System.err.println(e.getMessage());
                     return INVALID_CODE;
                 }
             }
@@ -94,8 +96,20 @@ public class Sjavac {
      */
     public static void main(String[] args) throws FileNotFoundException {
         String fileName = args[0];
-        Sjavac compiler = new Sjavac(fileName);
-        System.out.println(compiler.initialSweep());
+        Sjavac compiler;
+        try {
+            compiler = new Sjavac(fileName);
+        }
+        catch (FileException e) {
+            System.err.println(e.getMessage());
+            System.out.println(IO_ERROR);
+            return;
+        }
+        int ret = compiler.initialSweep();
+        if (ret != LEGAL_CODE) {
+            System.out.println(ret);
+            return;
+        }
         compiler.fileProcessor.reset();
         System.out.println(compiler.compile());
     }

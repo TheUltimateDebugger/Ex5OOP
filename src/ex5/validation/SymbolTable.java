@@ -74,7 +74,8 @@ public class SymbolTable {
      * @param isInitialized Whether the variable is initialized.
      * @param isFinal Whether the variable is final.
      */
-    public void addGlobalVariable(String name, String type, boolean isInitialized, boolean isFinal) {
+    public void addGlobalVariable(String name, String type,
+                                  boolean isInitialized, boolean isFinal) {
         scopes.get(0).put(name, new Variable(name, type, isInitialized, isFinal, true));
     }
 
@@ -87,7 +88,8 @@ public class SymbolTable {
      * @param isInitialized Whether the variable is initialized.
      */
     public void addLocalVariable(String name, String type, boolean isFinal, boolean isInitialized) {
-        scopes.get(scopes.size() - 1).put(name, new Variable(name, type, isInitialized, isFinal, true));
+        scopes.get(scopes.size() - 1).put(name, new Variable(name, type,
+                isInitialized, isFinal, true));
     }
 
     /**
@@ -202,10 +204,12 @@ public class SymbolTable {
             boolean isFinal = false;
             if (parameter[FIRST_PARAM].startsWith(RegexUtils.FINAL)) {
                 isFinal = true;
-                parameter[FIRST_PARAM] = parameter[FIRST_PARAM].substring(RegexUtils.FINAL.length()).trim();
+                parameter[FIRST_PARAM] = parameter[FIRST_PARAM].substring(
+                        RegexUtils.FINAL.length()).trim();
             }
-            scopes.get(scopes.size() - 1).put(parameter[SECOND_PARAM], new Variable(parameter[SECOND_PARAM],
-                    parameter[FIRST_PARAM], true, isFinal, true));
+            scopes.get(scopes.size() - 1).put(parameter[SECOND_PARAM],
+                    new Variable(parameter[SECOND_PARAM], parameter[FIRST_PARAM],
+                            true, isFinal, true));
         }
     }
 
@@ -239,7 +243,8 @@ public class SymbolTable {
     /**
      * Exits the current scope by removing the last map from the scopes list.
      *
-     * @throws ValidationException If there are mismatched braces (i.e., trying to exit the global scope).
+     * @throws ValidationException If there are mismatched braces
+     * (i.e., trying to exit the global scope).
      */
     public void exitScope() throws ValidationException {
         final String MISMATCH_BRACES = "Mismatching opening and closing braces";
