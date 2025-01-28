@@ -11,16 +11,11 @@ import ex5.parsing.RegexUtils;
 public class VariableValidator implements Validator {
 
     /** The symbol table used for managing variable scopes and definitions. */
-    private SymbolTable symbolTable;
+    private final SymbolTable symbolTable;
 
     /** Predefined constants used in variable validation. */
     private static final String DEFINING_VALUE_CHAR = "=",
             VAR_DELIMITER = ",", END_LINE = ";", EMPTY_STRING = "";
-
-    /**
-     * Error value constant used for identifying invalid scenarios.
-     */
-    private static final int ERROR_VALUE = -1;
 
     /**
      * Constructor for VariableValidator.
