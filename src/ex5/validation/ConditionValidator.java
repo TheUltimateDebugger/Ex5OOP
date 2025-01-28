@@ -26,9 +26,11 @@ public class ConditionValidator implements Validator {
      * @throws ValidationException If the line contains invalid conditions.
      */
     public void validate(String line) throws ValidationException {
+        final String START_CONDITION = "(", END_CONDITION = ")";
         // Check for if/while syntax using regex
         if (line.matches(RegexUtils.IF_WHILE_BLOCK)) {
-            String condition = line.substring(line.indexOf("(") + 1, line.indexOf(")")).trim();
+            String condition = line.substring(line.indexOf(START_CONDITION) + 1,
+                    line.indexOf(END_CONDITION)).trim();
             validateCondition(condition);
         }
     }
@@ -46,6 +48,7 @@ public class ConditionValidator implements Validator {
         final String VARIABLE_INVALID_TYPE = "Variable <> has invalid type";
         final String LITERAL_UNDEFINED = "Literal <> is undefined";
         final String PLACEHOLDER = "<>";
+        final int EXCEPTION_VALUE = -1;
 
         // Split conditions using logical operators (&&, ||)
         String[] conditions = overallCondition.split(RegexUtils.CONDITION_SPLITTERS);
@@ -56,7 +59,7 @@ public class ConditionValidator implements Validator {
             if (literalType.isEmpty()) {
                 // Check if variable exists in the symbol table
                 int lookupScope = symbolTable.findVariableScope(condition);
-                if (lookupScope == -1) {
+                if (lookupScope == EXCEPTION_VALUE) {
                     throw new ValidationException(VARIABLE_UNDEFINED.replace(PLACEHOLDER, condition));
                 }
 

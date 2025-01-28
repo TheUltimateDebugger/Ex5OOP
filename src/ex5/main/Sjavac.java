@@ -1,6 +1,7 @@
 package ex5.main;
 
 import ex5.exceptions.FileException;
+import ex5.exceptions.SJavaException;
 import ex5.exceptions.ValidationException;
 import ex5.parsing.FileProcessor;
 import ex5.parsing.RegexUtils;
@@ -14,6 +15,7 @@ public class Sjavac {
     public static final int IO_ERROR = 2;
     public final FileProcessor fileProcessor;
     private final SymbolTable symbolTable;
+    private static final String UNMATCHED_BRACES_ERROR = "Unmatched opening/closing braces.";
 
     public Sjavac(String fileName) {
         try {
@@ -42,7 +44,8 @@ public class Sjavac {
         }
 
         if (symbolTable.getScope() != 0) {
-            System.err.println("Unmatched opening/closing braces.");
+            //TODO: shouldn't be exception?
+            System.err.println(UNMATCHED_BRACES_ERROR);
             return INVALID_CODE;
         }
         return LEGAL_CODE;
@@ -71,10 +74,10 @@ public class Sjavac {
     }
 
     public static void main(String[] args) throws FileNotFoundException, ValidationException {
-        String fileName = args[0];
+        final int FILE_INDEX = 0;
+        String fileName = args[FILE_INDEX];
         Sjavac compiler = new Sjavac(fileName);
         System.out.println(compiler.initialSweep());
-        System.out.println("first pass completed");
         compiler.fileProcessor.reset();
         System.out.println(compiler.compile());
     }

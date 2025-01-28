@@ -10,6 +10,8 @@ import java.util.ArrayList;
  * @author Tomer Zilberman
  */
 public class MethodValidator implements Validator {
+    private static final char START_BRACKET = '(', END_BRACKET = ')';
+    private static final String PARAM_DELIMITER = ",", SPACE = " ";
     private final SymbolTable symbolTable;
 
     /**
@@ -48,7 +50,8 @@ public class MethodValidator implements Validator {
      */
     public void validateMethodDeclaration(String line) throws ValidationException {
         final int VOID_LENGTH = 4;
-        String[] nameAndParams = line.substring(VOID_LENGTH, line.indexOf('(')).trim().split(RegexUtils.SPACES);
+        String[] nameAndParams = line.substring(VOID_LENGTH,
+                line.indexOf(START_BRACKET)).trim().split(RegexUtils.SPACES);
         String methodName = nameAndParams[nameAndParams.length - 1];
         symbolTable.addMethodParams(methodName);
     }
@@ -65,7 +68,8 @@ public class MethodValidator implements Validator {
         final String PLACEHOLDER = "<>";
         final int VOID_LENGTH = 4;
 
-        String[] nameAndParams = line.substring(VOID_LENGTH, line.indexOf('(')).trim().split(RegexUtils.SPACES);
+        String[] nameAndParams = line.substring(VOID_LENGTH,
+                line.indexOf(START_BRACKET)).trim().split(RegexUtils.SPACES);
         String methodName = nameAndParams[nameAndParams.length - 1];
 
         if (methodName.matches(RegexUtils.ILLEGAL_METHOD_NAME)) {
@@ -75,7 +79,8 @@ public class MethodValidator implements Validator {
             throw new ValidationException(ALREADY_DECLARED.replace(PLACEHOLDER, methodName));
         }
 
-        String paramsSection = line.substring(line.indexOf('(') + 1, line.indexOf(')')).trim();
+        String paramsSection = line.substring(line.indexOf(START_BRACKET) + 1,
+                line.indexOf(END_BRACKET)).trim();
         ArrayList<String[]> parameters = parseParameters(paramsSection);
         symbolTable.addMethod(methodName, parameters);
     }
@@ -89,7 +94,8 @@ public class MethodValidator implements Validator {
     public void validateMethodCall(String line) throws ValidationException {
         final String METHOD_NOT_EXISTS = "Method '<>' does not exist";
         final String METHOD_ARGS = "Method '<1>' expects '<2>' arguments but got '<3>'";
-        final String ARGUMENT_INCOMPATIBLE = "Argument '<1>' of type '<2>' is not compatible with argument '<3>' in method '<4>'";
+        final String ARGUMENT_INCOMPATIBLE =
+                "Argument '<1>' of type '<2>' is not compatible with argument '<3>' in method '<4>'";
         final String PLACEHOLDER_1 = "<1>";
         final String PLACEHOLDER_2 = "<2>";
         final String PLACEHOLDER_3 = "<3>";
@@ -101,7 +107,8 @@ public class MethodValidator implements Validator {
             throw new ValidationException(METHOD_NOT_EXISTS.replace(PLACEHOLDER_1, methodName));
         }
 
-        String argsSection = line.substring(line.indexOf('(') + 1, line.indexOf(')')).trim();
+        String argsSection = line.substring(line.indexOf(START_BRACKET) + 1,
+                line.indexOf(END_BRACKET)).trim();
         ArrayList<String[]> arguments = parseArguments(argsSection);
         ArrayList<String[]> parameters = symbolTable.getMethodParameters(methodName);
 
@@ -147,7 +154,7 @@ public class MethodValidator implements Validator {
             return parametersList;
         }
 
-        String[] parameters = rawParameters.split(",");
+        String[] parameters = rawParameters.split(PARAM_DELIMITER);
 
         for (String parameter : parameters) {
             String[] parameterParts = parameter.trim().split(RegexUtils.SPACES, SPLIT_LIMIT);
@@ -155,7 +162,8 @@ public class MethodValidator implements Validator {
                 if (!parameterParts[0].equals(RegexUtils.FINAL)) {
                     throw new ValidationException(PARAMETER_INVALID.replace(PLACEHOLDER, parameter));
                 }
-                parameterParts = new String[]{parameterParts[0] + " " + parameterParts[1], parameterParts[2]};
+                parameterParts = new String[]{parameterParts[0] + SPACE +
+                        parameterParts[1], parameterParts[2]};
             }
             if (parameterParts.length != 2) {
                 throw new ValidationException(INVALID_PARAM_SYNTAX.replace(PLACEHOLDER, parameter));
@@ -165,7 +173,8 @@ public class MethodValidator implements Validator {
             }
             for (String[] existingParam : parametersList) {
                 if (existingParam[1].equals(parameterParts[1])) {
-                    throw new ValidationException(INVALID_PARAM_NAME.replace(PLACEHOLDER, parameterParts[1]));
+                    throw new ValidationException(INVALID_PARAM_NAME.
+                            replace(PLACEHOLDER, parameterParts[1]));
                 }
             }
             parametersList.add(parameterParts);
@@ -184,18 +193,20 @@ public class MethodValidator implements Validator {
     private ArrayList<String[]> parseArguments(String rawArguments) throws ValidationException {
         final String ARGUMENT_INVALID = "Argument '<>' is of unknown type";
         final String PLACEHOLDER = "<>";
+        final int OUTSIDE_SCOPE = -1;
 
         ArrayList<String[]> arguments = new ArrayList<>();
         if (rawArguments.isEmpty()) {
             return arguments;
         }
 
-        String[] args = rawArguments.split(",");
+        String[] args = rawArguments.split(PARAM_DELIMITER);
 
         for (String arg : args) {
             arg = arg.trim();
             int argScope = symbolTable.findVariableScope(arg);
-            String type = (argScope != -1) ? symbolTable.getVariableType(argScope, arg) : RegexUtils.getLiteralType(arg);
+            String type = (argScope != OUTSIDE_SCOPE) ?
+                    symbolTable.getVariableType(argScope, arg) : RegexUtils.getLiteralType(arg);
 
             if (type.isEmpty()) {
                 throw new ValidationException(ARGUMENT_INVALID.replace(PLACEHOLDER, arg));
